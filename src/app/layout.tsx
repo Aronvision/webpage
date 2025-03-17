@@ -6,13 +6,15 @@ import { AuthProvider } from '@/components/auth/auth-provider';
 import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
-  variable: '--font-sans',
   subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans',
 });
 
 const robotoMono = Roboto_Mono({
-  variable: '--font-mono',
   subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono',
 });
 
 export const metadata: Metadata = {
@@ -26,10 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${robotoMono.variable} antialiased`}
-      >
+    <html lang="ko" suppressHydrationWarning className={`${inter.variable} ${robotoMono.variable}`}>
+      <body className="min-h-screen bg-background font-sans antialiased">
         <Providers>
           <AuthProvider>{children}</AuthProvider>
           <Toaster />
