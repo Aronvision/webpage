@@ -2,6 +2,14 @@
 
 import { createClient } from "@/lib/supabase/client";
 
+// API 기본 URL 설정
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    return ''; // 브라우저에서는 상대 경로 사용
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+};
+
 export interface RegisterUserParams {
   email: string;
   name: string;
@@ -14,7 +22,7 @@ export interface RegisterUserParams {
 export async function registerUser({ email, name, password }: RegisterUserParams) {
   try {
     // 클라이언트 API 엔드포인트 호출
-    const response = await fetch('/api/auth/register', {
+    const response = await fetch(`${getBaseUrl()}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +48,7 @@ export async function registerUser({ email, name, password }: RegisterUserParams
  */
 export async function getUserByEmail(email: string) {
   try {
-    const response = await fetch(`/api/auth/user?email=${encodeURIComponent(email)}`);
+    const response = await fetch(`${getBaseUrl()}/api/auth/user?email=${encodeURIComponent(email)}`);
     
     if (!response.ok) {
       return null;
@@ -58,7 +66,7 @@ export async function getUserByEmail(email: string) {
  */
 export async function getUserById(id: string) {
   try {
-    const response = await fetch(`/api/auth/user/${id}`);
+    const response = await fetch(`${getBaseUrl()}/api/auth/user/${id}`);
     
     if (!response.ok) {
       return null;
