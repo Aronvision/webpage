@@ -1,18 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
+
+// 정적 생성 중에는 실행되지 않도록 설정
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    let email = null;
-    try {
-      const url = new URL(request.url);
-      email = url.searchParams.get('email');
-    } catch (error) {
-      console.error("URL 파싱 오류:", error);
-      if (request.nextUrl) {
-        email = request.nextUrl.searchParams.get('email');
-      }
-    }
+    // URL 파싱 부분 간소화
+    const searchParams = request.nextUrl.searchParams;
+    const email = searchParams.get('email');
 
     if (!email) {
       return NextResponse.json(
