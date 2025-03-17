@@ -17,29 +17,20 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // 절대 URL로 API 호출 (상대 경로 대신)
-          const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-          const response = await fetch(`${baseUrl}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password
-            }),
-          });
-
-          if (!response.ok) {
-            console.error("로그인 실패:", await response.text());
-            return null;
-          }
-
-          const user = await response.json();
+          // 직접 사용자 인증 로직 구현 (API 호출 대신)
+          // 예시: 데이터베이스에서 사용자 조회 및 비밀번호 검증
+          // 실제 구현에서는 데이터베이스 연결 코드로 대체해야 함
           
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name
-          };
+          // 임시 사용자 데이터 (테스트용)
+          if (credentials.email === "test@example.com" && credentials.password === "password") {
+            return {
+              id: "1",
+              email: credentials.email,
+              name: "테스트 사용자"
+            };
+          }
+          
+          return null;
         } catch (error) {
           console.error("인증 중 오류 발생:", error);
           return null;
@@ -71,6 +62,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30일
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
