@@ -2,10 +2,5 @@
   "version": 2,
   "buildCommand": "next build",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  "framework": "nextjs"
 } 
