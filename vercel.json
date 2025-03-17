@@ -3,5 +3,9 @@
   "buildCommand": "next build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "nodeVersion": "18.x"
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 } 
