@@ -429,7 +429,7 @@ function MapPage() {
                 {/* 지도 컨테이너 */}
                 <div 
                   ref={constraintsRef}
-                  className="relative w-full h-[calc(100vh-120rem)] bg-neutral-100 overflow-hidden touch-none"
+                  className="relative w-full h-[calc(100vh-20rem)] bg-neutral-100 overflow-hidden touch-none"
                 >
                   {/* 확대/축소 및 이동 가능한 지도 */}
                   <motion.div

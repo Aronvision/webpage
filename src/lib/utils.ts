@@ -12,6 +12,10 @@ export function getBaseUrl() {
   }
   
   // 서버 환경에서는 환경 변수 사용
+  if (process.env.NEXTAUTH_URL) {
+    return process.env.NEXTAUTH_URL;
+  }
+  
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }

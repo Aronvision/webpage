@@ -5,7 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 // API 기본 URL 설정
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') {
-    return ''; // 브라우저에서는 상대 경로 사용
+    // 브라우저에서는 NEXT_PUBLIC 변수를 확인하거나 상대 경로 사용
+    return process.env.NEXT_PUBLIC_API_URL || '';
   }
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 };

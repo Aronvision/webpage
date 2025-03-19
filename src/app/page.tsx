@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
+import { useSession } from 'next-auth/react';
 
 // 애니메이션 변수
 const fadeIn = {
@@ -93,6 +94,7 @@ export default function Home() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [direction, setDirection] = useState(0);
   const testimonialIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { data: session, status } = useSession();
   
   useEffect(() => {
     setIsLoaded(true);
@@ -164,7 +166,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white to-primary-100">
       {/* Header */}
-      <Header />
+      <Header isLoggedIn={!!session} />
 
       {/* Hero Section */}
       <main className="flex-1">
@@ -270,13 +272,15 @@ export default function Home() {
               animate={isLoaded ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <Image
-                src="https://picsum.photos/1200/600?1"
-                alt="NUVI 서비스 이미지"
-                fill
-                className="object-cover"
-                priority
-              />
+              <div className="relative w-full h-full">
+                <Image
+                  src="https://picsum.photos/1200/600?1"
+                  alt="NUVI 서비스 이미지"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 to-transparent"></div>
               
               {/* Floating Card */}

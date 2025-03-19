@@ -8,15 +8,29 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bell, Calendar, Map, MapPin, Clock, ChevronRight, Activity } from 'lucide-react';
+import { Bell, Calendar, Map, MapPin, Clock, ChevronRight, Activity, Home, List, LayoutDashboard } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // 디버깅을 위한 세션 상태 로깅
+  useEffect(() => {
+    console.log("대시보드 페이지 - 세션 상태:", status);
+    console.log("대시보드 페이지 - 세션 데이터:", session);
+  }, [status, session]);
+
+  // 인증되지 않은 경우 로그인 페이지로 리디렉션
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      console.log("인증되지 않음, 로그인 페이지로 리디렉션");
+      router.push('/login');
+    }
+  }, [status, router]);
 
   // 현재 시간 업데이트
   useEffect(() => {
@@ -26,6 +40,24 @@ export default function DashboardPage() {
     
     return () => clearInterval(timer);
   }, []);
+
+  // 로딩 중이거나 인증되지 않은 경우 표시
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-neutral-500">페이지 로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 인증되지 않은 상태인 경우 반환하지 않음 (useEffect에서 리디렉션됨)
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-neutral-500">인증이 필요한 페이지입니다. 로그인 페이지로 이동합니다...</p>
+      </div>
+    );
+  }
 
   // 애니메이션 변수
   const containerVariants = {
@@ -104,7 +136,7 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white/90 backdrop-blur-sm border-b border-blue-100/50 shadow-sm mt-0"
+        className="bg-white/90 backdrop-blur-sm border-b border-blue-100/50 shadow-sm mt-0 sticky top-0 z-50"
       >
         <div className="container mx-auto p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -118,18 +150,67 @@ export default function DashboardPage() {
                 <span>{format(currentTime, 'p', { locale: ko })}</span>
               </p>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md hover:shadow-lg transition-all"
-                onClick={() => router.push('/reservations/new')}
+            
+            <div className="flex items-center space-x-2">
+              {/* 네비게이션 버튼들 - 우측 정렬 */}
+              <div className="hidden md:flex items-center mr-4 space-x-1">
+                <Button 
+                  variant="ghost" 
+                  className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50"
+                  onClick={() => router.push('/')}
+                >
+                  <Home className="w-4 h-4 mr-2" />
+                  홈
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50 font-medium"
+                  onClick={() => router.push('/dashboard')}
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  대시보드
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50 font-medium"
+                  onClick={() => router.push('/reservations')}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  예약관리
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50 font-medium"
+                  onClick={() => router.push('/map')}
+                >
+                  <Map className="w-4 h-4 mr-2" />
+                  지도
+                </Button>
+              </div>
+            
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <Calendar className="w-4 h-4 mr-2" />
-                새 예약 만들기
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  onClick={() => router.push('/reservations/new')}
+                >
+                  <Calendar className="w-4 h-4 mr-2" />
+                  새 예약 만들기
+                </Button>
+              </motion.div>
+              
+              {/* 모바일 메뉴 토글 버튼 */}
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="md:hidden border-neutral-200"
+                onClick={() => alert('모바일 메뉴는 준비 중입니다.')}
+              >
+                <List className="h-5 w-5" />
               </Button>
-            </motion.div>
+            </div>
           </div>
         </div>
       </motion.div>

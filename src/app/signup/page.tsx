@@ -220,7 +220,7 @@ export default function SignupPage() {
       </main>
 
       {/* 이미지 배경 (데스크톱에서만 표시) */}
-      <div className="fixed inset-0 -z-10 hidden md:block">
+      <div className="fixed inset-0 -z-10 hidden md:block relative">
         <Image
           src="https://picsum.photos/400/300?3"
           alt="회원가입 배경 이미지"

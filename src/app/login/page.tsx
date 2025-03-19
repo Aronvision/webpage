@@ -1,5 +1,4 @@
 'use client';
-
 export const dynamic = 'force-dynamic';
 
 import { Button } from '@/components/ui/button';
@@ -11,8 +10,8 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -21,8 +20,24 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { data: session, status } = useSession();
+  
+  // 이미 로그인된 경우 대시보드로 리디렉션
+  useEffect(() => {
+    if (status === 'authenticated' && session) {
+      router.push('/dashboard');
+    }
+  }, [status, session, router]);
+
+  // 로그인 성공 후 리디렉션
+  useEffect(() => {
+    if (isRedirecting && status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [isRedirecting, status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,8 +74,23 @@ export default function LoginPage() {
         return;
       }
       
-      // 대시보드로 리다이렉트
-      router.push(result?.url || '/dashboard');
+      if (result?.ok) {
+        // 로그인 성공 시 토스트 메시지 표시
+        toast({
+          title: '로그인 성공',
+          description: '환영합니다! 대시보드로 이동합니다.',
+        });
+        
+        // 리디렉션 플래그 설정
+        setIsRedirecting(true);
+      } else {
+        // 결과가 OK가 아니지만 에러도 없는 경우 (드물게 발생)
+        toast({
+          title: '로그인 오류',
+          description: '로그인 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
+          variant: 'destructive',
+        });
+      }
     } catch (error) {
       console.error('로그인 오류:', error);
       toast({
@@ -96,7 +126,7 @@ export default function LoginPage() {
                   placeholder="이메일을 입력하세요."
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
+                  disabled={isLoading || isRedirecting}
                   required
                   className="w-full"
                 />
@@ -115,7 +145,7 @@ export default function LoginPage() {
                   placeholder="비밀번호를 입력하세요."
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  disabled={isLoading}
+                  disabled={isLoading || isRedirecting}
                   required
                   className="w-full"
                 />
@@ -126,7 +156,7 @@ export default function LoginPage() {
                   id="remember" 
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                  disabled={isLoading}
+                  disabled={isLoading || isRedirecting}
                 />
                 <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">
                   로그인 상태 유지
@@ -136,9 +166,9 @@ export default function LoginPage() {
               <Button 
                 type="submit" 
                 className="w-full bg-primary-500 hover:bg-primary-700 text-white"
-                disabled={isLoading}
+                disabled={isLoading || isRedirecting}
               >
-                {isLoading ? '로그인 중...' : '로그인'}
+                {isLoading ? '로그인 중...' : isRedirecting ? '이동 중...' : '로그인'}
               </Button>
             </form>
             
@@ -156,7 +186,7 @@ export default function LoginPage() {
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  disabled={isLoading}
+                  disabled={isLoading || isRedirecting}
                   onClick={() => {
                     // 항공권 번호 로그인 로직 (추후 구현)
                     toast({
@@ -183,7 +213,7 @@ export default function LoginPage() {
       </main>
 
       {/* 이미지 배경 (데스크톱에서만 표시) */}
-      <div className="fixed inset-0 -z-10 hidden md:block">
+      <div className="fixed inset-0 -z-10 hidden md:block relative">
         <Image
           src="https://picsum.photos/400/300?2"
           alt="로그인 배경 이미지"

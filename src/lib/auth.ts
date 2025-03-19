@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,24 +12,46 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("인증 실패: 이메일 또는 비밀번호 누락");
           return null;
         }
 
         try {
-          // 직접 사용자 인증 로직 구현 (API 호출 대신)
-          // 예시: 데이터베이스에서 사용자 조회 및 비밀번호 검증
-          // 실제 구현에서는 데이터베이스 연결 코드로 대체해야 함
+          console.log(`인증 시도: ${credentials.email}`);
           
-          // 임시 사용자 데이터 (테스트용)
-          if (credentials.email === "test@example.com" && credentials.password === "password") {
-            return {
-              id: "1",
+          // 상대 경로 대신 절대 경로 사용
+          // 환경 변수 기반 URL 설정
+          const baseUrl = process.env.NEXTAUTH_URL || 
+                         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+          
+          const response = await fetch(`${baseUrl}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
               email: credentials.email,
-              name: "테스트 사용자"
-            };
+              password: credentials.password
+            }),
+          });
+
+          if (!response.ok) {
+            console.error("로그인 API 오류:", response.status, response.statusText);
+            return null;
+          }
+
+          const user = await response.json();
+          
+          console.log("인증 성공:", user);
+          
+          if (!user || !user.id) {
+            console.error("인증 실패: 유효하지 않은 사용자 데이터");
+            return null;
           }
           
-          return null;
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name || "사용자"
+          };
         } catch (error) {
           console.error("인증 중 오류 발생:", error);
           return null;
@@ -64,7 +85,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30일
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback_secret_do_not_use_in_production",
   debug: process.env.NODE_ENV === "development",
 };
 

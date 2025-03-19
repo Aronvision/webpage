@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Header } from '@/components/layout/header';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Header } from '@/components/layout/header';
-import { useToast } from '@/components/ui/use-toast';
+import { useEffect } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -13,32 +12,46 @@ export default function DashboardLayout({
 }) {
   const { status, data: session } = useSession();
   const router = useRouter();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(true);
-
+  
+  // 디버깅을 위한 세션 상태 로깅
   useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (status === 'unauthenticated') {
-      toast({
-        title: '로그인이 필요합니다',
-        description: '대시보드에 접근하려면 로그인이 필요합니다.',
-        variant: 'destructive',
-      });
-      router.push('/login');
-    } else {
-      setIsLoading(false);
-    }
-  }, [status, router, toast]);
+    console.log("대시보드 레이아웃 - 세션 상태:", status);
+    console.log("대시보드 레이아웃 - 세션 데이터:", session);
+  }, [status, session]);
 
-  if (isLoading) {
+  // 인증되지 않은 경우 로그인 페이지로 리디렉션
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      console.log("레이아웃 - 인증되지 않음, 로그인 페이지로 리디렉션");
+      router.push('/login');
+    }
+  }, [status, router]);
+
+  // 로딩 중인 경우
+  if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-neutral-500">로딩 중...</p>
+      <div className="flex min-h-screen flex-col">
+        <Header isLoggedIn={false} />
+        <div className="flex-1 w-full flex items-center justify-center">
+          <p className="text-neutral-500">인증 상태 확인 중...</p>
+        </div>
       </div>
     );
   }
 
+  // 인증되지 않은 경우
+  if (status === 'unauthenticated') {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header isLoggedIn={false} />
+        <div className="flex-1 w-full flex items-center justify-center">
+          <p className="text-neutral-500">인증이 필요한 페이지입니다. 로그인 페이지로 이동합니다...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 인증된 경우 대시보드 레이아웃 렌더링
   return (
     <div className="flex min-h-screen flex-col">
       {/* 헤더 (상단 네비게이션 바) */}
