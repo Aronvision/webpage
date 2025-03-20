@@ -137,9 +137,9 @@ export default function InstantUsePage() {
   };
 
   const renderBatteryIcon = (level: number) => {
-    if (level > 75) return <Battery className="w-4 h-4 text-green-500" />;
-    if (level > 25) return <Battery className="w-4 h-4 text-amber-500" />;
-    return <Battery className="w-4 h-4 text-red-500" />;
+    if (level > 75) return <Battery className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />;
+    if (level > 25) return <Battery className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />;
+    return <Battery className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />;
   };
 
   // 로딩 중이거나 인증되지 않은 경우 표시
@@ -155,27 +155,27 @@ export default function InstantUsePage() {
     <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
       {/* 헤더 */}
       <header className="bg-white shadow-sm z-50 relative">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between">
           <div className="flex items-center">
             <Button 
               variant="ghost" 
               size="icon"
-              className="mr-2"
+              className="mr-1 sm:mr-2 h-8 w-8 sm:h-9 sm:w-9"
               onClick={() => router.back()}
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
-            <h1 className="text-lg font-semibold">바로 이용하기</h1>
+            <h1 className="text-base sm:text-lg font-semibold">바로 이용하기</h1>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center">
             <Button 
               variant="outline" 
               size="icon"
-              className="h-8 w-8 bg-white border-gray-200"
+              className="h-7 w-7 sm:h-8 sm:w-8 bg-white border-gray-200"
               onClick={() => alert('정보 보기')}
             >
-              <Info className="h-4 w-4" />
+              <Info className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function InstantUsePage() {
             <div 
               key={device.id}
               className={cn(
-                "absolute p-2 rounded-full transition-transform cursor-pointer",
+                "absolute p-1 sm:p-2 rounded-full transition-transform cursor-pointer",
                 selectedDevice?.id === device.id ? "scale-125" : "scale-100",
                 device.available ? "bg-blue-500" : "bg-gray-400"
               )}
@@ -227,15 +227,15 @@ export default function InstantUsePage() {
               }}
               onClick={() => handleDeviceClick(device)}
             >
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center shadow-md">
                 {device.type === 'BIKE' ? (
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg viewBox="0 0 24 24" width="16" height="16" className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M5.5 14l3.5 -7l4 2.5l3 -5.5" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M9 11a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 ) : (
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg viewBox="0 0 24 24" width="16" height="16" className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M6 14h4a1 1 0 0 0 1 -1v-3a3 3 0 0 0 -3 -3h-1" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M5 9l1 0" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M4 9v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1 -1v-11a1 1 0 0 0 -1 -1h-1" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
@@ -243,9 +243,9 @@ export default function InstantUsePage() {
                 )}
               </div>
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full whitespace-nowrap">
-                <div className="px-2 py-1 bg-white shadow-md rounded-md text-xs font-semibold flex items-center mt-1">
+                <div className="px-1 py-0.5 sm:px-2 sm:py-1 bg-white shadow-md rounded-md text-[8px] sm:text-xs font-semibold flex items-center mt-1">
                   {renderBatteryIcon(device.batteryLevel)}
-                  <span className="ml-1">{device.batteryLevel}%</span>
+                  <span className="ml-0.5 sm:ml-1">{device.batteryLevel}%</span>
                 </div>
               </div>
             </div>
@@ -253,42 +253,42 @@ export default function InstantUsePage() {
         </div>
 
         {/* 컨트롤 패널 */}
-        <div className="absolute right-4 top-4 flex flex-col gap-2">
+        <div className="absolute right-3 sm:right-4 top-3 sm:top-4 flex flex-col gap-1.5 sm:gap-2">
           <Button 
             variant="outline" 
             size="icon" 
-            className="h-10 w-10 bg-white shadow-md rounded-full"
+            className="h-8 w-8 sm:h-10 sm:w-10 bg-white shadow-md rounded-full"
             onClick={handleZoomIn}
           >
-            <ZoomIn className="h-5 w-5" />
+            <ZoomIn className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
           <Button 
             variant="outline" 
             size="icon" 
-            className="h-10 w-10 bg-white shadow-md rounded-full"
+            className="h-8 w-8 sm:h-10 sm:w-10 bg-white shadow-md rounded-full"
             onClick={handleZoomOut}
           >
-            <ZoomOut className="h-5 w-5" />
+            <ZoomOut className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
           <Button 
             variant="outline" 
             size="icon" 
-            className="h-10 w-10 bg-white shadow-md rounded-full"
+            className="h-8 w-8 sm:h-10 sm:w-10 bg-white shadow-md rounded-full"
             onClick={() => setPosition({ x: 0, y: 0 })}
           >
-            <Compass className="h-5 w-5" />
+            <Compass className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
 
         {/* 하단 범례 */}
-        <div className="absolute left-4 bottom-4 flex gap-3 bg-white p-2 rounded-lg shadow-md">
+        <div className="absolute left-3 sm:left-4 bottom-3 sm:bottom-4 flex gap-2 sm:gap-3 bg-white p-1.5 sm:p-2 rounded-lg shadow-md">
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-blue-500 mr-1"></div>
-            <span className="text-xs">이용가능</span>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-blue-500 mr-1"></div>
+            <span className="text-[10px] sm:text-xs">이용가능</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-gray-400 mr-1"></div>
-            <span className="text-xs">이용불가</span>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gray-400 mr-1"></div>
+            <span className="text-[10px] sm:text-xs">이용불가</span>
           </div>
         </div>
       </div>
@@ -303,27 +303,27 @@ export default function InstantUsePage() {
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           >
-            <div className="relative bg-white rounded-t-xl shadow-lg p-4 pb-8">
+            <div className="relative bg-white rounded-t-xl shadow-lg p-3 sm:p-4 pb-6 sm:pb-8">
               {/* 닫기 버튼 */}
               <Button 
                 variant="ghost" 
                 size="icon"
-                className="absolute right-2 top-2"
+                className="absolute right-1 sm:right-2 top-1 sm:top-2 h-7 w-7 sm:h-8 sm:w-8"
                 onClick={() => setShowDeviceInfo(false)}
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
 
-              <div className="flex items-center mb-6 mt-2">
-                <div className="bg-gray-100 p-3 rounded-full mr-3">
+              <div className="flex items-center mb-4 sm:mb-6 mt-1 sm:mt-2">
+                <div className="bg-gray-100 p-2 sm:p-3 rounded-full mr-2 sm:mr-3">
                   {selectedDevice.type === 'BIKE' ? (
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 24 24" width="20" height="20" className="w-5 h-5 sm:w-6 sm:h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M5.5 14l3.5 -7l4 2.5l3 -5.5" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M9 11a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg viewBox="0 0 24 24" width="20" height="20" className="w-5 h-5 sm:w-6 sm:h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M6 14h4a1 1 0 0 0 1 -1v-3a3 3 0 0 0 -3 -3h-1" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M5 9l1 0" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M4 9v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1 -1v-11a1 1 0 0 0 -1 -1h-1" strokeWidth="2" stroke="#000" strokeLinecap="round" strokeLinejoin="round"/>
@@ -332,39 +332,39 @@ export default function InstantUsePage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-medium">
+                    <h2 className="text-base sm:text-lg font-medium">
                       공항 모빌리티 {selectedDevice.id}
                     </h2>
-                    <Badge variant={selectedDevice.available ? "default" : "outline"} className={`font-normal ${selectedDevice.available ? "bg-blue-500 hover:bg-blue-600" : "text-gray-500"}`}>
+                    <Badge variant={selectedDevice.available ? "default" : "outline"} className={`text-[10px] sm:text-xs font-normal ${selectedDevice.available ? "bg-blue-500 hover:bg-blue-600" : "text-gray-500"}`}>
                       {selectedDevice.available ? '이용 가능' : '이용 불가'}
                     </Badge>
                   </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Battery className="w-4 h-4 mr-1" />
+                  <div className="flex items-center text-xs sm:text-sm text-gray-500">
+                    <Battery className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
                     <span>배터리 {selectedDevice.batteryLevel}%</span>
-                    <span className="mx-2">•</span>
-                    <Clock className="w-4 h-4 mr-1" />
+                    <span className="mx-1 sm:mx-2">•</span>
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
                     <span>142분 이용 가능</span>
                   </div>
                 </div>
               </div>
 
               {/* 버튼 그룹 */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <Button 
                   variant="outline"
-                  className="py-6 h-auto flex-col gap-2 border-gray-200"
+                  className="py-4 sm:py-6 h-auto flex-col gap-1 sm:gap-2 border-gray-200"
                   onClick={() => alert('찜하기 기능 준비 중입니다.')}
                 >
-                  <span className="text-lg font-semibold">찜하기</span>
-                  <span className="text-xs text-gray-500">BETA</span>
+                  <span className="text-base sm:text-lg font-semibold">찜하기</span>
+                  <span className="text-[10px] sm:text-xs text-gray-500">BETA</span>
                 </Button>
                 <Button 
-                  className="py-6 h-auto flex-col gap-2 bg-blue-500 hover:bg-blue-600"
+                  className="py-4 sm:py-6 h-auto flex-col gap-1 sm:gap-2 bg-blue-500 hover:bg-blue-600"
                   onClick={() => router.push('/qr-scan')}
                 >
-                  <QrCode className="h-5 w-5 mb-1" />
-                  <span className="text-lg font-semibold">QR 스캔하기</span>
+                  <QrCode className="h-4 w-4 sm:h-5 sm:w-5 mb-0.5 sm:mb-1" />
+                  <span className="text-base sm:text-lg font-semibold">QR 스캔하기</span>
                 </Button>
               </div>
             </div>

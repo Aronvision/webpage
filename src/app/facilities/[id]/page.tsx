@@ -98,17 +98,17 @@ function FacilityDetailPage({ params }) {
         transition={{ duration: 0.5 }}
         className="bg-white/90 backdrop-blur-sm border-b border-blue-100/50 shadow-sm"
       >
-        <div className="container mx-auto p-6">
-          <div className="flex items-center">
+        <div className="container mx-auto px-4 py-3 sm:p-6">
+          <div className="flex items-center flex-wrap">
             <Button 
               variant="ghost" 
-              className="mr-2 p-2"
+              className="mr-2 p-1 sm:p-2"
               onClick={() => router.back()}
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
-            <h1 className="text-2xl font-bold text-neutral-900">{facility.name}</h1>
-            <Badge className={`ml-3 ${categoryStyle}`}>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-900 mr-2 line-clamp-1">{facility.name}</h1>
+            <Badge className={`mt-1 sm:mt-0 ${categoryStyle}`}>
               {categoryInfo[facility.category]?.name || '기타'}
             </Badge>
           </div>
@@ -116,9 +116,9 @@ function FacilityDetailPage({ params }) {
       </motion.div>
 
       {/* 메인 콘텐츠 */}
-      <main className="container mx-auto p-6">
+      <main className="container mx-auto px-4 py-4 sm:p-6">
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -130,19 +130,21 @@ function FacilityDetailPage({ params }) {
           >
             <Card className="border-none shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-blue-100 overflow-hidden">
               <CardContent className="p-0">
-                <div className="relative w-full h-96">
+                <div className="relative w-full h-60 sm:h-80 md:h-96">
                   <Image
                     src={facility.images[activeImageIndex] || 'https://picsum.photos/800/600?placeholder'}
                     alt={facility.name}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                    priority
                   />
                 </div>
-                <div className="p-4 flex space-x-2 overflow-x-auto">
+                <div className="p-2 sm:p-4 flex space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-primary-200 scrollbar-track-transparent">
                   {facility.images.map((image, index) => (
                     <div 
                       key={index}
-                      className={`relative w-20 h-20 rounded-md overflow-hidden cursor-pointer border-2 ${
+                      className={`relative min-w-16 w-16 h-16 sm:min-w-20 sm:w-20 sm:h-20 rounded-md overflow-hidden cursor-pointer border-2 ${
                         activeImageIndex === index ? 'border-primary-500' : 'border-transparent'
                       }`}
                       onClick={() => setActiveImageIndex(index)}
@@ -152,6 +154,7 @@ function FacilityDetailPage({ params }) {
                         alt={`${facility.name} 이미지 ${index + 1}`}
                         fill
                         className="object-cover"
+                        sizes="80px"
                       />
                     </div>
                   ))}
@@ -165,23 +168,23 @@ function FacilityDetailPage({ params }) {
             variants={itemVariants}
           >
             <Card className="border-none shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-              <CardContent className="p-6">
-                <div className="space-y-6">
+              <CardContent className="p-4 sm:p-6">
+                <div className="space-y-4 sm:space-y-6">
                   {/* 위치 정보 */}
                   <div className="flex items-start">
                     <MapPin className="w-5 h-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-neutral-800">위치</h3>
-                      <p className="text-neutral-600">{facility.location}</p>
+                      <p className="text-neutral-600 break-words">{facility.location}</p>
                     </div>
                   </div>
 
                   {/* 운영 시간 */}
                   <div className="flex items-start">
                     <Clock className="w-5 h-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-neutral-800">운영 시간</h3>
-                      <p className="text-neutral-600">{facility.operating_hours || '정보 없음'}</p>
+                      <p className="text-neutral-600 break-words">{facility.operating_hours || '정보 없음'}</p>
                     </div>
                   </div>
 
@@ -189,9 +192,9 @@ function FacilityDetailPage({ params }) {
                   {facility.phone && (
                     <div className="flex items-start">
                       <Phone className="w-5 h-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-neutral-800">연락처</h3>
-                        <p className="text-neutral-600">{facility.phone}</p>
+                        <p className="text-neutral-600 break-words">{facility.phone}</p>
                       </div>
                     </div>
                   )}
@@ -200,13 +203,13 @@ function FacilityDetailPage({ params }) {
                   {facility.website && (
                     <div className="flex items-start">
                       <Info className="w-5 h-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-neutral-800">웹사이트</h3>
                         <a 
                           href={facility.website} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-primary-600 hover:underline"
+                          className="text-primary-600 hover:underline break-words inline-block"
                         >
                           {facility.website}
                         </a>
@@ -218,10 +221,10 @@ function FacilityDetailPage({ params }) {
                   {facility.rating !== undefined && (
                     <div className="flex items-start">
                       <Star className="w-5 h-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-neutral-800">평점</h3>
-                        <div className="flex items-center">
-                          <div className="flex">
+                        <div className="flex items-center flex-wrap">
+                          <div className="flex mr-2">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star 
                                 key={star} 
@@ -235,7 +238,7 @@ function FacilityDetailPage({ params }) {
                               />
                             ))}
                           </div>
-                          <span className="ml-2 text-neutral-600">
+                          <span className="text-sm sm:text-base text-neutral-600">
                             {facility.rating} ({facility.reviews || 0}개 리뷰)
                           </span>
                         </div>
@@ -247,14 +250,14 @@ function FacilityDetailPage({ params }) {
                   <motion.div
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    className="pt-4"
+                    className="pt-2 sm:pt-4"
                   >
                     <Button 
                       className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium shadow-md"
                       onClick={() => router.push('/reservations/new')}
                     >
                       <Calendar className="w-4 h-4 mr-2" />
-                      이 위치로 로봇 예약하기
+                      <span className="truncate">이 위치로 로봇 예약하기</span>
                     </Button>
                   </motion.div>
                 </div>
@@ -268,8 +271,8 @@ function FacilityDetailPage({ params }) {
             variants={itemVariants}
           >
             <Card className="border-none shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold text-neutral-800 mb-4">시설 정보</h2>
+              <CardContent className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-neutral-800 mb-2 sm:mb-4">시설 정보</h2>
                 <p className="text-neutral-600 leading-relaxed">{facility.description || '상세 정보가 없습니다.'}</p>
               </CardContent>
             </Card>

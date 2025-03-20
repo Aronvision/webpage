@@ -93,16 +93,16 @@ export default function LoginPage() {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center p-6">
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-md">
-          <Card className="p-6 shadow-lg">
-            <div className="mb-6 text-center">
-              <h1 className="text-2xl font-bold text-neutral-900">로그인</h1>
-              <p className="text-neutral-500 mt-2">계정 정보를 입력하여 로그인하세요</p>
+          <Card className="p-4 sm:p-6 shadow-lg">
+            <div className="mb-4 sm:mb-6 text-center">
+              <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">로그인</h1>
+              <p className="text-sm text-neutral-500 mt-1 sm:mt-2">계정 정보를 입력하여 로그인하세요</p>
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+              <div className="space-y-1 sm:space-y-2">
                 <Label htmlFor="email">이메일</Label>
                 <Input
                   id="email"
@@ -112,14 +112,14 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading || isRedirecting}
                   required
-                  className="w-full"
+                  className="w-full text-sm sm:text-base"
                 />
               </div>
               
-              <div className="space-y-2">
+              <div className="space-y-1 sm:space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">비밀번호</Label>
-                  <Link href="/forgot-password" className="text-sm text-primary-500 hover:underline">
+                  <Link href="/forgot-password" className="text-xs sm:text-sm text-primary-500 hover:underline">
                     비밀번호 찾기
                   </Link>
                 </div>
@@ -131,7 +131,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading || isRedirecting}
                   required
-                  className="w-full"
+                  className="w-full text-sm sm:text-base"
                 />
               </div>
               
@@ -142,14 +142,14 @@ export default function LoginPage() {
                   onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                   disabled={isLoading || isRedirecting}
                 />
-                <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">
+                <Label htmlFor="remember" className="text-xs sm:text-sm font-normal cursor-pointer">
                   로그인 상태 유지
                 </Label>
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-primary-500 hover:bg-primary-700 text-white"
+                className="w-full bg-primary-500 hover:bg-primary-700 text-white text-sm sm:text-base py-2 sm:py-6 h-auto"
                 disabled={isLoading || isRedirecting}
               >
                 {isLoading ? '로그인 중...' : isRedirecting ? '이동 중...' : '로그인'}
@@ -157,26 +157,26 @@ export default function LoginPage() {
 
               {/* 로그인 오류 메시지 */}
               {loginError && (
-                <div className="p-3 mt-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+                <div className="p-2 sm:p-3 mt-2 sm:mt-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-xs sm:text-sm">
                   {loginError}
                 </div>
               )}
             </form>
             
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-neutral-300"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
+                <div className="relative flex justify-center text-xs sm:text-sm">
                   <span className="px-2 bg-white text-neutral-500">또는</span>
                 </div>
               </div>
               
-              <div className="mt-6 grid grid-cols-1 gap-3">
+              <div className="mt-4 sm:mt-6 grid grid-cols-1 gap-3">
                 <Button 
                   variant="outline" 
-                  className="w-full"
+                  className="w-full text-sm sm:text-base py-2 sm:py-6 h-auto"
                   disabled={isLoading || isRedirecting}
                   onClick={() => {
                     // 항공권 번호 로그인 로직 (추후 구현)
@@ -188,8 +188,8 @@ export default function LoginPage() {
               </div>
             </div>
             
-            <div className="mt-6 text-center">
-              <p className="text-sm text-neutral-500">
+            <div className="mt-4 sm:mt-6 text-center">
+              <p className="text-xs sm:text-sm text-neutral-500">
                 계정이 없으신가요?{' '}
                 <Link href="/signup" className="text-primary-500 hover:underline">
                   회원가입

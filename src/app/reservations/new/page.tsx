@@ -108,28 +108,28 @@ export default function ReservationPage() {
         transition={{ duration: 0.5 }}
         className="bg-white/90 backdrop-blur-sm border-b border-blue-100/50 shadow-sm"
       >
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
           <div className="flex items-center">
             <Button 
               variant="ghost" 
-              className="mr-4 text-neutral-600 hover:text-primary-600"
+              className="mr-3 md:mr-4 text-neutral-600 hover:text-primary-600"
               onClick={() => router.back()}
             >
-              <ChevronLeft className="w-5 h-5 mr-1" />
+              <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 mr-1" />
               뒤로
             </Button>
-            <h1 className="text-2xl font-bold text-neutral-900">새 예약 만들기</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-neutral-900">새 예약 만들기</h1>
           </div>
         </div>
       </motion.div>
 
       {/* 메인 콘텐츠 */}
-      <main className="container mx-auto p-6 relative">
+      <main className="container mx-auto px-4 py-4 sm:px-6 sm:py-6 relative">
         {/* 배경 패턴 */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLW9wYWNpdHk9Ii4xNSIgY3g9IjEwIiBjeT0iMTAiIHI9IjEuNSIvPjwvZz48L3N2Zz4=')] bg-[size:24px_24px] opacity-50 pointer-events-none"></div>
         
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 relative z-10"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -137,27 +137,27 @@ export default function ReservationPage() {
           {/* 예약 폼 */}
           <motion.div variants={itemVariants}>
             <Card className="border-none shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center">
-                  <CalendarIcon className="w-5 h-5 mr-2 text-primary-500" />
+              <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                <CardTitle className="text-lg sm:text-xl flex items-center">
+                  <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary-500" />
                   예약 정보 입력
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs sm:text-sm">
                   모빌리티 로봇 예약을 위한 정보를 입력해주세요
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
+              <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                   {/* 날짜 선택 */}
-                  <div className="space-y-2">
-                    <Label htmlFor="date">날짜 선택</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="date" className="text-sm sm:text-base">날짜 선택</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left font-normal border-neutral-200 hover:bg-neutral-50"
+                          className="w-full justify-start text-left text-xs sm:text-sm font-normal border-neutral-200 hover:bg-neutral-50 h-auto py-2"
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4 text-primary-500" />
+                          <CalendarIcon className="mr-2 h-3 w-3 sm:h-4 sm:w-4 text-primary-500" />
                           {date ? (
                             format(date, 'PPP', { locale: ko })
                           ) : (
@@ -172,19 +172,20 @@ export default function ReservationPage() {
                           onSelect={setDate}
                           disabled={(date) => date < new Date()}
                           locale={ko}
+                          className="text-xs sm:text-sm"
                         />
                       </PopoverContent>
                     </Popover>
                   </div>
 
                   {/* 시간 선택 */}
-                  <div className="space-y-2">
-                    <Label htmlFor="time">시간 선택</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="time" className="text-sm sm:text-base">시간 선택</Label>
                     <Select value={time} onValueChange={setTime}>
-                      <SelectTrigger className="w-full border-neutral-200">
+                      <SelectTrigger className="w-full border-neutral-200 text-xs sm:text-sm h-auto py-2">
                         <SelectValue placeholder="시간을 선택하세요" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="text-xs sm:text-sm">
                         {timeOptions.map((t) => (
                           <SelectItem key={t} value={t}>
                             {t}
@@ -195,29 +196,29 @@ export default function ReservationPage() {
                   </div>
 
                   {/* 터미널 선택 */}
-                  <div className="space-y-2">
-                    <Label>터미널 선택</Label>
-                    <RadioGroup value={terminal} onValueChange={setTerminal} className="flex flex-col space-y-2">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label className="text-sm sm:text-base">터미널 선택</Label>
+                    <RadioGroup value={terminal} onValueChange={setTerminal} className="flex flex-col space-y-1 sm:space-y-2">
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="terminal1" id="terminal1" />
-                        <Label htmlFor="terminal1" className="font-normal cursor-pointer">제1터미널</Label>
+                        <Label htmlFor="terminal1" className="text-xs sm:text-sm font-normal cursor-pointer">제1터미널</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="terminal2" id="terminal2" />
-                        <Label htmlFor="terminal2" className="font-normal cursor-pointer">제2터미널</Label>
+                        <Label htmlFor="terminal2" className="text-xs sm:text-sm font-normal cursor-pointer">제2터미널</Label>
                       </div>
                     </RadioGroup>
                   </div>
 
                   {/* 목적지 입력 */}
-                  <div className="space-y-2">
-                    <Label htmlFor="destination">목적지</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="destination" className="text-sm sm:text-base">목적지</Label>
                     <div className="relative">
-                      <MapPin className="absolute left-3 top-3 h-4 w-4 text-neutral-400" />
+                      <MapPin className="absolute left-3 top-2 sm:top-3 h-3 w-3 sm:h-4 sm:w-4 text-neutral-400" />
                       <Input
                         id="destination"
                         placeholder="게이트 번호 또는 시설명을 입력하세요"
-                        className="pl-10 border-neutral-200"
+                        className="pl-8 sm:pl-10 border-neutral-200 text-xs sm:text-sm h-auto py-2"
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
                       />
@@ -225,26 +226,26 @@ export default function ReservationPage() {
                   </div>
 
                   {/* 탑승 인원 */}
-                  <div className="space-y-2">
-                    <Label htmlFor="passengers">탑승 인원</Label>
-                    <div className="flex items-center border rounded-md border-neutral-200 px-3 py-2 bg-white">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="passengers" className="text-sm sm:text-base">탑승 인원</Label>
+                    <div className="flex items-center border rounded-md border-neutral-200 px-3 py-2 bg-white text-xs sm:text-sm">
                       <span className="text-neutral-900">1명</span>
                     </div>
                   </div>
 
                   {/* 특별 요청사항 */}
-                  <div className="space-y-2">
-                    <Label htmlFor="specialRequests">특별 요청사항 (선택)</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="specialRequests" className="text-sm sm:text-base">특별 요청사항 (선택)</Label>
                     <Textarea
                       id="specialRequests"
                       placeholder="특별한 요청사항이 있으시면 입력해주세요"
-                      className="border-neutral-200 resize-none"
+                      className="border-neutral-200 resize-none text-xs sm:text-sm h-20 sm:h-24"
                       value={specialRequests}
                       onChange={(e) => setSpecialRequests(e.target.value)}
                     />
                   </div>
 
-                  <Separator className="my-6" />
+                  <Separator className="my-4 sm:my-6" />
 
                   {/* 제출 버튼 */}
                   <motion.div
@@ -253,70 +254,79 @@ export default function ReservationPage() {
                   >
                     <Button 
                       type="submit" 
-                      className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium shadow-md"
+                      className="w-full bg-primary-600 hover:bg-primary-700 text-white text-sm sm:text-base py-2 sm:py-6 h-auto"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? '예약 처리 중...' : '예약 완료하기'}
-                      {!isSubmitting && <ChevronRight className="w-4 h-4 ml-1" />}
+                      {isSubmitting ? (
+                        <div className="flex items-center">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          예약 처리 중...
+                        </div>
+                      ) : (
+                        "예약 확정하기"
+                      )}
                     </Button>
                   </motion.div>
                 </form>
               </CardContent>
             </Card>
           </motion.div>
-
-          {/* 이미지 및 안내 */}
+          
+          {/* 예약 정보 요약 및 도움말 */}
           <motion.div variants={itemVariants} className="hidden lg:block">
-            <div className="space-y-6">
-              <Card className="border-none shadow-lg overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-                <div className="relative h-64 w-full">
-                  <Image
-                    src="https://picsum.photos/800/400?4"
-                    alt="공항 모빌리티 로봇"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <CardContent className="pt-6">
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-2">모빌리티 로봇 서비스 안내</h3>
-                  <p className="text-neutral-600 mb-4">
-                    공항 내 이동을 도와주는 모빌리티 로봇 서비스는 터미널 내 어디서든 편리하게 이용하실 수 있습니다.
-                  </p>
-                  <ul className="space-y-2 text-neutral-600">
+            <Card className="border-none shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-blue-100 h-full">
+              <CardHeader className="px-6 py-6">
+                <CardTitle className="text-xl flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-primary-500" />
+                  예약 정보 요약
+                </CardTitle>
+                <CardDescription>
+                  입력하신 정보를 확인해주세요
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="px-6 pb-6 space-y-6">
+                {/* 여기에 예약 정보 요약 컴포넌트가 들어감 */}
+                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                  <h3 className="font-medium text-blue-800 mb-2">예약 시 참고사항</h3>
+                  <ul className="space-y-2 text-sm text-blue-700">
                     <li className="flex items-start">
-                      <span className="bg-primary-100 text-primary-700 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">1</span>
-                      <span>예약 시간 10분 전에 지정된 장소에서 대기합니다.</span>
+                      <span className="mr-1.5">•</span>
+                      <span>예약은 최소 1시간 전에 완료해주세요.</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="bg-primary-100 text-primary-700 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">2</span>
-                      <span>로봇은 1인용으로 운영됩니다.</span>
+                      <span className="mr-1.5">•</span>
+                      <span>예약 시간 10분 전에 지정된 장소에서 대기해주세요.</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="bg-primary-100 text-primary-700 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">3</span>
-                      <span>예약 변경은 예약 시간 30분 전까지 가능합니다.</span>
+                      <span className="mr-1.5">•</span>
+                      <span>예약 취소는 예약 시간 30분 전까지 가능합니다.</span>
                     </li>
                   </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-lg bg-gradient-to-br from-primary-500 to-primary-600 text-white backdrop-blur-sm ring-1 ring-primary-400/20">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">도움이 필요하신가요?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-primary-100 mb-4">
-                    예약에 관한 문의사항이 있으시면 고객센터로 연락해주세요.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full bg-white/10 text-white border-white/20 hover:bg-white/20"
-                    onClick={() => router.push('/help')}
-                  >
-                    고객센터 문의하기
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+                
+                <div className="border-t border-neutral-200 pt-6">
+                  <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                    <Image
+                      src="https://picsum.photos/800/450?4"
+                      alt="공항 모빌리티 안내 이미지"
+                      width={800}
+                      height={450}
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+              
+              <CardFooter className="px-6 pb-6 pt-0 flex justify-center">
+                <Button variant="outline" className="text-neutral-700" onClick={() => window.open('/help/reservation', '_blank')}>
+                  예약 도움말 보기
+                </Button>
+              </CardFooter>
+            </Card>
           </motion.div>
         </motion.div>
       </main>

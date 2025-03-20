@@ -155,13 +155,13 @@ export default function MyPage() {
         transition={{ duration: 0.5 }}
         className="bg-white/90 backdrop-blur-sm border-b border-blue-100/50 shadow-sm mt-0"
       >
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-neutral-900 mb-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-1">
                 마이페이지
               </h1>
-              <p className="text-neutral-500">
+              <p className="text-sm sm:text-base text-neutral-500">
                 개인 정보 관리 및 예약 이력을 확인하세요
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function MyPage() {
             >
               <Button 
                 variant="outline"
-                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-medium"
+                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-medium text-sm sm:text-base"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 로그아웃
@@ -182,7 +182,7 @@ export default function MyPage() {
       </motion.div>
 
       {/* Main Content */}
-      <main className="container mx-auto p-6 relative">
+      <main className="container mx-auto px-4 py-4 sm:py-6 relative">
         {/* 배경 패턴 */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLW9wYWNpdHk9Ii4xNSIgY3g9IjEwIiBjeT0iMTAiIHI9IjEuNSIvPjwvZz48L3N2Zz4=')] bg-[size:24px_24px] opacity-50 pointer-events-none"></div>
         
@@ -198,17 +198,17 @@ export default function MyPage() {
             className="w-full"
             onValueChange={setActiveTab}
           >
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="profile" className="text-sm md:text-base">
-                <User className="w-4 h-4 mr-2 hidden md:inline" />
+            <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-8">
+              <TabsTrigger value="profile" className="text-xs sm:text-sm md:text-base py-1.5 sm:py-2">
+                <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 inline" />
                 프로필
               </TabsTrigger>
-              <TabsTrigger value="reservations" className="text-sm md:text-base">
-                <Calendar className="w-4 h-4 mr-2 hidden md:inline" />
+              <TabsTrigger value="reservations" className="text-xs sm:text-sm md:text-base py-1.5 sm:py-2">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 inline" />
                 예약 이력
               </TabsTrigger>
-              <TabsTrigger value="settings" className="text-sm md:text-base">
-                <Settings className="w-4 h-4 mr-2 hidden md:inline" />
+              <TabsTrigger value="settings" className="text-xs sm:text-sm md:text-base py-1.5 sm:py-2">
+                <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 inline" />
                 설정
               </TabsTrigger>
             </TabsList>
@@ -217,33 +217,33 @@ export default function MyPage() {
             <TabsContent value="profile">
               <motion.div 
                 variants={itemVariants}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                className="grid grid-cols-1 gap-4 sm:gap-6"
               >
                 {/* 프로필 카드 */}
-                <Card className="border-none shadow-lg hover:shadow-xl transition-all md:col-span-1 bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+                <Card className="border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
                   <CardHeader className="text-center">
-                    <div className="flex justify-center mb-4">
-                      <Avatar className="w-24 h-24 border-4 border-white shadow-md">
+                    <div className="flex justify-center mb-3 sm:mb-4">
+                      <Avatar className="w-16 h-16 sm:w-24 sm:h-24 border-4 border-white shadow-md">
                         <AvatarImage src={userInfo.profileImage} alt={userInfo.name} />
-                        <AvatarFallback className="text-2xl bg-primary-100 text-primary-700">
+                        <AvatarFallback className="text-xl sm:text-2xl bg-primary-100 text-primary-700">
                           {userInfo.name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                     </div>
-                    <CardTitle className="text-2xl">{userInfo.name}</CardTitle>
-                    <CardDescription>{userInfo.email}</CardDescription>
+                    <CardTitle className="text-xl sm:text-2xl">{userInfo.name}</CardTitle>
+                    <CardDescription className="text-sm sm:text-base">{userInfo.email}</CardDescription>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <div className="flex justify-center mt-4">
+                    <div className="flex justify-center mt-3 sm:mt-4">
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
                         <Button 
                           variant="outline" 
-                          className="border-primary-200 text-primary-700 hover:bg-primary-50"
+                          className="border-primary-200 text-primary-700 hover:bg-primary-50 text-sm sm:text-base"
                         >
-                          <Edit className="w-4 h-4 mr-2" />
+                          <Edit className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                           프로필 수정
                         </Button>
                       </motion.div>
@@ -252,32 +252,32 @@ export default function MyPage() {
                 </Card>
 
                 {/* 개인 정보 카드 */}
-                <Card className="border-none shadow-lg hover:shadow-xl transition-all md:col-span-2 bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-                  <CardHeader>
-                    <CardTitle className="text-xl flex items-center">
-                      <User className="w-5 h-5 mr-2 text-primary-500" />
+                <Card className="border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl flex items-center">
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-primary-500" />
                       개인 정보
                     </CardTitle>
-                    <CardDescription>회원 정보 및 연락처</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">회원 정보 및 연락처</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-neutral-500">이름</p>
-                          <p className="text-neutral-900 font-medium">{userInfo.name}</p>
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="space-y-1 sm:space-y-2">
+                          <p className="text-xs sm:text-sm font-medium text-neutral-500">이름</p>
+                          <p className="text-sm sm:text-base text-neutral-900 font-medium">{userInfo.name}</p>
                         </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-neutral-500">이메일</p>
-                          <p className="text-neutral-900">{userInfo.email}</p>
+                        <div className="space-y-1 sm:space-y-2">
+                          <p className="text-xs sm:text-sm font-medium text-neutral-500">이메일</p>
+                          <p className="text-sm sm:text-base text-neutral-900">{userInfo.email}</p>
                         </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-neutral-500">연락처</p>
-                          <p className="text-neutral-900">{userInfo.phone}</p>
+                        <div className="space-y-1 sm:space-y-2">
+                          <p className="text-xs sm:text-sm font-medium text-neutral-500">연락처</p>
+                          <p className="text-sm sm:text-base text-neutral-900">{userInfo.phone}</p>
                         </div>
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-neutral-500">가입일</p>
-                          <p className="text-neutral-900">{format(new Date(userInfo.joinDate), 'PPP', { locale: ko })}</p>
+                        <div className="space-y-1 sm:space-y-2">
+                          <p className="text-xs sm:text-sm font-medium text-neutral-500">가입일</p>
+                          <p className="text-sm sm:text-base text-neutral-900">{format(new Date(userInfo.joinDate), 'PPP', { locale: ko })}</p>
                         </div>
                       </div>
                     </div>
@@ -285,23 +285,23 @@ export default function MyPage() {
                 </Card>
 
                 {/* 최근 활동 카드 */}
-                <Card className="border-none shadow-lg hover:shadow-xl transition-all md:col-span-3 bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-                  <CardHeader>
-                    <CardTitle className="text-xl flex items-center">
-                      <Activity className="w-5 h-5 mr-2 text-primary-500" />
+                <Card className="border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl flex items-center">
+                      <Activity className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-primary-500" />
                       최근 활동
                     </CardTitle>
-                    <CardDescription>지난 30일 간의 활동 내역</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">지난 30일 간의 활동 내역</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-48 flex items-center justify-center">
-                      <div className="flex space-x-2 items-end">
+                    <div className="h-32 sm:h-48 flex items-center justify-center">
+                      <div className="flex space-x-1 sm:space-x-2 items-end">
                         {[35, 45, 30, 65, 50, 75, 60, 40, 55, 70, 45, 30].map((height, i) => (
                           <motion.div
                             key={i}
-                            className="bg-primary-100 rounded-t w-6 md:w-8"
+                            className="bg-primary-100 rounded-t w-4 sm:w-6 md:w-8"
                             initial={{ height: 0 }}
-                            animate={{ height: `${height}px` }}
+                            animate={{ height: `${height * 0.7}px` }}
                             transition={{ 
                               delay: i * 0.05,
                               duration: 0.8,
@@ -323,32 +323,32 @@ export default function MyPage() {
             <TabsContent value="reservations">
               <motion.div variants={itemVariants}>
                 <Card className="border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-                  <CardHeader>
-                    <CardTitle className="text-xl flex items-center">
-                      <Calendar className="w-5 h-5 mr-2 text-primary-500" />
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl flex items-center">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-primary-500" />
                       예약 이력
                     </CardTitle>
-                    <CardDescription>지금까지의 모든 예약 내역을 확인하세요</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">지금까지의 모든 예약 내역을 확인하세요</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="rounded-md border">
+                    <div className="rounded-md border overflow-x-auto">
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[100px]">날짜</TableHead>
-                            <TableHead className="w-[100px]">시간</TableHead>
-                            <TableHead>목적지</TableHead>
-                            <TableHead className="text-right">상태</TableHead>
+                            <TableHead className="text-xs sm:text-sm w-[80px] sm:w-[100px]">날짜</TableHead>
+                            <TableHead className="text-xs sm:text-sm w-[70px] sm:w-[100px]">시간</TableHead>
+                            <TableHead className="text-xs sm:text-sm">목적지</TableHead>
+                            <TableHead className="text-xs sm:text-sm text-right">상태</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {reservations.map((reservation) => (
                             <TableRow key={reservation.id}>
-                              <TableCell className="font-medium">{reservation.date}</TableCell>
-                              <TableCell>{reservation.time}</TableCell>
-                              <TableCell>{reservation.destination}</TableCell>
+                              <TableCell className="text-xs sm:text-sm font-medium">{reservation.date}</TableCell>
+                              <TableCell className="text-xs sm:text-sm">{reservation.time}</TableCell>
+                              <TableCell className="text-xs sm:text-sm max-w-[120px] sm:max-w-none truncate">{reservation.destination}</TableCell>
                               <TableCell className="text-right">
-                                <span className={`text-xs px-2 py-1 rounded-full ${getStatusStyle(reservation.status)}`}>
+                                <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${getStatusStyle(reservation.status)}`}>
                                   {reservation.status}
                                 </span>
                               </TableCell>
@@ -364,10 +364,10 @@ export default function MyPage() {
                       >
                         <Button 
                           variant="outline" 
-                          className="border-primary-200 text-primary-700 hover:bg-primary-50 hover:text-primary-800"
+                          className="border-primary-200 text-primary-700 hover:bg-primary-50 hover:text-primary-800 text-xs sm:text-sm"
                         >
                           새 예약 만들기
-                          <ChevronRight className="w-4 h-4 ml-1" />
+                          <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
                         </Button>
                       </motion.div>
                     </div>
@@ -380,23 +380,23 @@ export default function MyPage() {
             <TabsContent value="settings">
               <motion.div variants={itemVariants}>
                 <Card className="border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-                  <CardHeader>
-                    <CardTitle className="text-xl flex items-center">
-                      <Settings className="w-5 h-5 mr-2 text-primary-500" />
+                  <CardHeader className="pb-2 sm:pb-4">
+                    <CardTitle className="text-lg sm:text-xl flex items-center">
+                      <Settings className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-primary-500" />
                       설정
                     </CardTitle>
-                    <CardDescription>알림, 언어, 접근성 등의 설정을 관리하세요</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">알림, 언어, 접근성 등의 설정을 관리하세요</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       {/* 알림 설정 */}
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <div className="flex items-center">
-                            <Bell className="w-4 h-4 mr-2 text-primary-500" />
-                            <h3 className="text-base font-medium">알림 설정</h3>
+                            <Bell className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-primary-500" />
+                            <h3 className="text-sm sm:text-base font-medium">알림 설정</h3>
                           </div>
-                          <p className="text-sm text-neutral-500">
+                          <p className="text-xs sm:text-sm text-neutral-500">
                             예약 및 공지사항 알림을 받습니다
                           </p>
                         </div>
@@ -412,10 +412,10 @@ export default function MyPage() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <div className="flex items-center">
-                            <Moon className="w-4 h-4 mr-2 text-primary-500" />
-                            <h3 className="text-base font-medium">다크 모드</h3>
+                            <Moon className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-primary-500" />
+                            <h3 className="text-sm sm:text-base font-medium">다크 모드</h3>
                           </div>
-                          <p className="text-sm text-neutral-500">
+                          <p className="text-xs sm:text-sm text-neutral-500">
                             어두운 테마로 화면을 표시합니다
                           </p>
                         </div>
@@ -431,14 +431,14 @@ export default function MyPage() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <div className="flex items-center">
-                            <Globe className="w-4 h-4 mr-2 text-primary-500" />
-                            <h3 className="text-base font-medium">언어 설정</h3>
+                            <Globe className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-primary-500" />
+                            <h3 className="text-sm sm:text-base font-medium">언어 설정</h3>
                           </div>
-                          <p className="text-sm text-neutral-500">
+                          <p className="text-xs sm:text-sm text-neutral-500">
                             현재 언어: {settings.language}
                           </p>
                         </div>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="text-xs sm:text-sm h-7 sm:h-9">
                           변경
                         </Button>
                       </div>
@@ -447,10 +447,10 @@ export default function MyPage() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <div className="flex items-center">
-                            <Volume2 className="w-4 h-4 mr-2 text-primary-500" />
-                            <h3 className="text-base font-medium">소리 효과</h3>
+                            <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-primary-500" />
+                            <h3 className="text-sm sm:text-base font-medium">소리 효과</h3>
                           </div>
-                          <p className="text-sm text-neutral-500">
+                          <p className="text-xs sm:text-sm text-neutral-500">
                             알림 및 상호작용 소리를 활성화합니다
                           </p>
                         </div>
@@ -466,10 +466,10 @@ export default function MyPage() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <div className="flex items-center">
-                            <Eye className="w-4 h-4 mr-2 text-primary-500" />
-                            <h3 className="text-base font-medium">고대비 모드</h3>
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 text-primary-500" />
+                            <h3 className="text-sm sm:text-base font-medium">고대비 모드</h3>
                           </div>
-                          <p className="text-sm text-neutral-500">
+                          <p className="text-xs sm:text-sm text-neutral-500">
                             시각적 접근성을 높이기 위한 고대비 화면
                           </p>
                         </div>
@@ -482,13 +482,13 @@ export default function MyPage() {
                       </div>
                     </div>
 
-                    <div className="mt-8 flex justify-end">
+                    <div className="mt-6 sm:mt-8 flex justify-end">
                       <motion.div
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <Button 
-                          className="bg-primary-500 hover:bg-primary-600 text-white"
+                          className="bg-primary-500 hover:bg-primary-600 text-white text-xs sm:text-sm h-8 sm:h-10"
                         >
                           설정 저장
                         </Button>
