@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           console.log("인증 실패: 이메일 또는 비밀번호 누락");
-          return null;
+          throw new Error("이메일과 비밀번호를 모두 입력해주세요.");
         }
 
         try {
@@ -33,18 +33,21 @@ export const authOptions: NextAuthOptions = {
             }),
           });
 
+          const data = await response.json();
+
           if (!response.ok) {
             console.error("로그인 API 오류:", response.status, response.statusText);
-            return null;
+            // 서버에서 전달한 에러 메시지를 사용
+            throw new Error(data.error || "이메일 또는 비밀번호가 올바르지 않습니다.");
           }
 
-          const user = await response.json();
+          const user = data;
           
           console.log("인증 성공:", user);
           
           if (!user || !user.id) {
             console.error("인증 실패: 유효하지 않은 사용자 데이터");
-            return null;
+            throw new Error("유효하지 않은 사용자 정보입니다.");
           }
           
           return {
@@ -54,7 +57,8 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.error("인증 중 오류 발생:", error);
-          return null;
+          // Error 객체에서 메시지 추출
+          throw new Error(error instanceof Error ? error.message : "인증 중 오류가 발생했습니다.");
         }
       }
     }),

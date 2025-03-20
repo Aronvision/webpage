@@ -3,7 +3,6 @@ import { Inter, Roboto_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
 import { AuthProvider } from '@/components/auth/auth-provider';
-import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,7 +31,6 @@ export default function RootLayout({
       <body className="min-h-screen bg-background font-sans antialiased">
         <Providers>
           <AuthProvider>{children}</AuthProvider>
-          <Toaster />
         </Providers>
       </body>
     </html>

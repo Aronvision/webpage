@@ -14,6 +14,7 @@ import { useState, useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -21,8 +22,8 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const router = useRouter();
-  const { toast } = useToast();
   const { data: session, status } = useSession();
   
   // 이미 로그인된 경우 대시보드로 리디렉션
@@ -41,13 +42,10 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError(null);
     
     if (!email || !password) {
-      toast({
-        title: '로그인 오류',
-        description: '이메일과 비밀번호를 모두 입력해주세요.',
-        variant: 'destructive',
-      });
+      setLoginError('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
     
@@ -65,39 +63,25 @@ export default function LoginPage() {
       
       console.log('로그인 결과:', result);
       
-      if (result?.error) {
-        toast({
-          title: '로그인 실패',
-          description: '이메일 또는 비밀번호가 올바르지 않습니다.',
-          variant: 'destructive',
-        });
-        return;
-      }
-      
-      if (result?.ok) {
-        // 로그인 성공 시 토스트 메시지 표시
-        toast({
-          title: '로그인 성공',
-          description: '환영합니다! 대시보드로 이동합니다.',
-        });
+      if (!result?.ok) {
+        // 로그인 실패
+        console.error('로그인 실패:', result?.error);
+        
+        // 에러 메시지 상태 설정
+        setLoginError(result?.error || '이메일 또는 비밀번호가 올바르지 않습니다.');
+      } else {
+        // 로그인 성공
+        setLoginError(null);
         
         // 리디렉션 플래그 설정
         setIsRedirecting(true);
-      } else {
-        // 결과가 OK가 아니지만 에러도 없는 경우 (드물게 발생)
-        toast({
-          title: '로그인 오류',
-          description: '로그인 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
-          variant: 'destructive',
-        });
       }
     } catch (error) {
       console.error('로그인 오류:', error);
-      toast({
-        title: '로그인 오류',
-        description: '로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
-        variant: 'destructive',
-      });
+      const errorMessage = error instanceof Error ? error.message : '로그인 중 오류가 발생했습니다. 다시 시도해주세요.';
+      
+      // 에러 메시지 상태 설정
+      setLoginError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -170,6 +154,13 @@ export default function LoginPage() {
               >
                 {isLoading ? '로그인 중...' : isRedirecting ? '이동 중...' : '로그인'}
               </Button>
+
+              {/* 로그인 오류 메시지 */}
+              {loginError && (
+                <div className="p-3 mt-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+                  {loginError}
+                </div>
+              )}
             </form>
             
             <div className="mt-6">
@@ -189,10 +180,7 @@ export default function LoginPage() {
                   disabled={isLoading || isRedirecting}
                   onClick={() => {
                     // 항공권 번호 로그인 로직 (추후 구현)
-                    toast({
-                      title: '준비 중',
-                      description: '항공권 번호 로그인 기능은 준비 중입니다.',
-                    });
+                    alert('항공권 번호 로그인 기능은 준비 중입니다.');
                   }}
                 >
                   항공권 번호로 로그인
@@ -224,6 +212,9 @@ export default function LoginPage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Toaster */}
+      <Toaster />
     </div>
   );
 } 
