@@ -57,6 +57,15 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const isHomePage = pathname === '/';
   const [isLoaded, setIsLoaded] = useState(false);
   
+  // 명시적으로 boolean으로 변환하여 로그인 상태를 확실하게 함
+  const userIsLoggedIn = Boolean(isLoggedIn);
+  
+  // 디버깅용 로깅 추가
+  useEffect(() => {
+    console.log('Header - isLoggedIn prop:', isLoggedIn);
+    console.log('Header - userIsLoggedIn:', userIsLoggedIn);
+  }, [isLoggedIn, userIsLoggedIn]);
+  
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -124,7 +133,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       </motion.div>
       
       <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-center md:justify-end">
-        {isLoggedIn ? (
+        {userIsLoggedIn ? (
           <>
             {/* 네비게이션 메뉴 */}
             <div className="flex items-center gap-1 md:gap-2">

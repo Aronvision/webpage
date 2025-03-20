@@ -36,7 +36,7 @@ function MapPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [selectedTerminal, setSelectedTerminal] = useState('T1');
-  const [selectedFloor, setSelectedFloor] = useState('1F');
+  const [selectedFloor, setSelectedFloor] = useState('ALL');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const isInitialMount = useRef(true);
@@ -179,17 +179,17 @@ function MapPage() {
   // 아이콘 렌더링 함수
   const renderIcon = (iconName: string) => {
     switch (iconName) {
-      case 'map-pin': return <MapPin className="w-4 h-4" />;
-      case 'utensils': return <Utensils className="w-4 h-4" />;
-      case 'coffee': return <Coffee className="w-4 h-4" />;
-      case 'shopping-bag': return <ShoppingBag className="w-4 h-4" />;
-      case 'heart': return <Heart className="w-4 h-4" />;
-      case 'wifi': return <Wifi className="w-4 h-4" />;
-      case 'phone': return <Phone className="w-4 h-4" />;
-      case 'baby': return <Baby className="w-4 h-4" />;
-      case 'accessibility': return <AccessibilityIcon className="w-4 h-4" />;
-      case 'plane': return <Plane className="w-4 h-4" />;
-      default: return <MapPin className="w-4 h-4" />;
+      case 'map-pin': return <MapPin className="w-5 h-5" />;
+      case 'utensils': return <Utensils className="w-5 h-5" />;
+      case 'coffee': return <Coffee className="w-5 h-5" />;
+      case 'shopping-bag': return <ShoppingBag className="w-5 h-5" />;
+      case 'heart': return <Heart className="w-5 h-5" />;
+      case 'wifi': return <Wifi className="w-5 h-5" />;
+      case 'phone': return <Phone className="w-5 h-5" />;
+      case 'baby': return <Baby className="w-5 h-5" />;
+      case 'accessibility': return <AccessibilityIcon className="w-5 h-5" />;
+      case 'plane': return <Plane className="w-5 h-5" />;
+      default: return <MapPin className="w-5 h-5" />;
     }
   };
 
@@ -465,7 +465,7 @@ function MapPage() {
                         transition={{ type: 'spring', stiffness: 200, damping: 10 }}
                         onClick={() => handleMarkerClick(facility)}
                       >
-                        <div className={`p-1 rounded-full ${
+                        <div className={`p-2 rounded-full ${
                           selectedFacility?.id === facility.id 
                             ? 'bg-primary-500 text-white ring-4 ring-primary-200 z-20' 
                             : 'bg-white text-primary-500 border border-primary-300 z-10'

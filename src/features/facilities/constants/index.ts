@@ -20,6 +20,7 @@ export const terminals = [
 
 // 층 정보
 export const floors = [
+  { id: 'ALL', name: '전체' },
   { id: 'B1', name: '지하 1층' },
   { id: '1F', name: '1층' },
   { id: '2F', name: '2층' },

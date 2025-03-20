@@ -181,7 +181,7 @@ function FacilityDetailPage({ params }) {
                     <Clock className="w-5 h-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
                     <div>
                       <h3 className="font-medium text-neutral-800">운영 시간</h3>
-                      <p className="text-neutral-600">{facility.operatingHours || '정보 없음'}</p>
+                      <p className="text-neutral-600">{facility.operating_hours || '정보 없음'}</p>
                     </div>
                   </div>
 

@@ -23,14 +23,14 @@ export interface Facility {
   floor: string;
   coordinates: Coordinates;
   description?: string;
-  operatingHours?: string;
+  operating_hours?: string;
   phone?: string;
   website?: string;
   rating?: number;
   reviews?: number;
   images: string[];
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface FacilityFilter {

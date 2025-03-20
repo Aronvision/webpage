@@ -1,54 +1,72 @@
 'use server';
 
 import { Facility, FacilityFilter } from './types';
-import { mockFacilities } from './mock-data';
+import { createClient } from '@/lib/supabase/server';
 
 // 모든 편의시설 목록 가져오기
 export async function getAllFacilities(): Promise<Facility[]> {
-  // 모의 데이터 반환
-  return mockFacilities;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('facilities')
+    .select('*');
+  
+  if (error) {
+    console.error('시설 데이터 가져오기 오류:', error);
+    return [];
+  }
+  
+  return data || [];
 }
 
 // 필터링된 편의시설 목록 가져오기
 export async function getFilteredFacilities(filter: FacilityFilter): Promise<Facility[]> {
-  // 모의 데이터 필터링
-  let filteredFacilities = [...mockFacilities];
+  const supabase = await createClient();
+  let query = supabase.from('facilities').select('*');
   
   // 터미널 필터링
   if (filter.terminal) {
-    filteredFacilities = filteredFacilities.filter(facility => facility.terminal === filter.terminal);
+    query = query.eq('terminal', filter.terminal);
   }
   
-  // 층 필터링
-  if (filter.floor) {
-    filteredFacilities = filteredFacilities.filter(facility => facility.floor === filter.floor);
+  // 층 필터링 - 'ALL'일 경우 적용하지 않음
+  if (filter.floor && filter.floor !== 'ALL') {
+    query = query.eq('floor', filter.floor);
   }
   
   // 카테고리 필터링
   if (filter.category && filter.category !== 'all') {
-    filteredFacilities = filteredFacilities.filter(facility => facility.category === filter.category);
+    query = query.eq('category', filter.category);
   }
   
-  // 검색어 필터링
+  // 검색어 필터링 - 이름 또는 위치에 포함된 경우
   if (filter.searchQuery) {
-    const query = filter.searchQuery.toLowerCase();
-    filteredFacilities = filteredFacilities.filter(facility => 
-      facility.name.toLowerCase().includes(query) || 
-      facility.location.toLowerCase().includes(query)
-    );
+    const searchTerm = `%${filter.searchQuery}%`;
+    query = query.or(`name.ilike.${searchTerm},location.ilike.${searchTerm}`);
   }
   
-  return filteredFacilities;
+  const { data, error } = await query;
+  
+  if (error) {
+    console.error('필터링된 시설 데이터 가져오기 오류:', error);
+    return [];
+  }
+  
+  return data || [];
 }
 
 // 특정 ID의 편의시설 정보 가져오기
 export async function getFacilityById(id: string): Promise<Facility | null> {
-  // 모의 데이터에서 ID로 시설 찾기
-  const facility = mockFacilities.find(facility => facility.id === id);
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('facilities')
+    .select('*')
+    .eq('id', id)
+    .single();
   
-  if (!facility) {
+  if (error) {
+    console.error('시설 데이터 가져오기 오류:', error.message);
     return null;
   }
   
-  return facility;
+  return data || null;
 } 

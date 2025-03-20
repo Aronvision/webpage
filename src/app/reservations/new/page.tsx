@@ -32,7 +32,6 @@ export default function ReservationPage() {
   const [time, setTime] = useState<string>('10:00');
   const [terminal, setTerminal] = useState<string>('terminal1');
   const [destination, setDestination] = useState<string>('');
-  const [passengers, setPassengers] = useState<string>('1');
   const [specialRequests, setSpecialRequests] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -228,17 +227,9 @@ export default function ReservationPage() {
                   {/* 탑승 인원 */}
                   <div className="space-y-2">
                     <Label htmlFor="passengers">탑승 인원</Label>
-                    <Select value={passengers} onValueChange={setPassengers}>
-                      <SelectTrigger className="w-full border-neutral-200">
-                        <SelectValue placeholder="인원을 선택하세요" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1명</SelectItem>
-                        <SelectItem value="2">2명</SelectItem>
-                        <SelectItem value="3">3명</SelectItem>
-                        <SelectItem value="4">4명</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center border rounded-md border-neutral-200 px-3 py-2 bg-white">
+                      <span className="text-neutral-900">1명</span>
+                    </div>
                   </div>
 
                   {/* 특별 요청사항 */}
@@ -298,7 +289,7 @@ export default function ReservationPage() {
                     </li>
                     <li className="flex items-start">
                       <span className="bg-primary-100 text-primary-700 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">2</span>
-                      <span>최대 4명까지 탑승 가능합니다.</span>
+                      <span>로봇은 1인용으로 운영됩니다.</span>
                     </li>
                     <li className="flex items-start">
                       <span className="bg-primary-100 text-primary-700 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">3</span>

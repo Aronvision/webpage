@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bell, Calendar, Map, MapPin, Clock, ChevronRight, Activity, Home, List, LayoutDashboard } from 'lucide-react';
+import { Bell, Calendar, Map, MapPin, Clock, ChevronRight, Activity, Home, List, LayoutDashboard, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -220,22 +220,21 @@ export default function DashboardPage() {
         {/* 배경 패턴 */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLW9wYWNpdHk9Ii4xNSIgY3g9IjEwIiBjeT0iMTAiIHI9IjEuNSIvPjwvZz48L3N2Zz4=')] bg-[size:24px_24px] opacity-50 pointer-events-none"></div>
         
-        {/* 대시보드 그리드 */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        {/* 빠른 예약과 바로 사용하기 카드 - 항상 가로로 배치 */}
+        <div className="grid grid-cols-2 gap-6 relative z-10 mb-6">
           {/* 빠른 예약 카드 */}
-          <motion.div variants={itemVariants}>
-            <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-primary-500 to-primary-600 text-white backdrop-blur-sm ring-1 ring-primary-400/20">
+          <motion.div 
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <Card className="h-full overflow-hidden border-none shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-blue-500 to-blue-600 text-white backdrop-blur-sm ring-1 ring-blue-400/20">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center">
                   <Calendar className="w-5 h-5 mr-2 opacity-90" />
                   빠른 예약
                 </CardTitle>
-                <CardDescription className="text-primary-100">지금 바로 모빌리티 로봇을 예약하세요</CardDescription>
+                <CardDescription className="text-blue-100">지금 바로 모빌리티 로봇을 예약하세요</CardDescription>
               </CardHeader>
               <CardContent>
                 <motion.div
@@ -243,7 +242,7 @@ export default function DashboardPage() {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Button 
-                    className="w-full bg-blue-100 text-blue-800 hover:bg-blue-200 font-medium shadow-md"
+                    className="w-full bg-white/90 text-blue-800 hover:bg-white font-medium shadow-md"
                     onClick={() => router.push('/reservations/new')}
                   >
                     지금 예약하기
@@ -254,9 +253,48 @@ export default function DashboardPage() {
             </Card>
           </motion.div>
 
+          {/* 바로 사용하기 카드 */}
+          <motion.div 
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <Card className="h-full overflow-hidden border-none shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-sky-500 to-sky-600 text-white backdrop-blur-sm ring-1 ring-sky-400/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xl flex items-center">
+                  <Zap className="w-5 h-5 mr-2 opacity-90" />
+                  바로 사용하기
+                </CardTitle>
+                <CardDescription className="text-sky-100">대기 없이 빠르게 모빌리티 로봇을 이용하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button 
+                    className="w-full bg-white/90 text-sky-800 hover:bg-white font-medium shadow-md"
+                    onClick={() => router.push('/instant-use')}
+                  >
+                    바로 사용하기
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+        
+        {/* 나머지 대시보드 그리드 */}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* 예약 현황 카드 */}
-          <motion.div variants={itemVariants}>
-            <Card className="border-none shadow-lg hover:shadow-xl transition-all h-full bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+          <motion.div variants={itemVariants} className="md:col-span-1">
+            <Card className="h-full border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center">
                   <Clock className="w-5 h-5 mr-2 text-primary-500" />
@@ -312,8 +350,8 @@ export default function DashboardPage() {
           </motion.div>
 
           {/* 공지사항 카드 */}
-          <motion.div variants={itemVariants}>
-            <Card className="border-none shadow-lg hover:shadow-xl transition-all h-full bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+          <motion.div variants={itemVariants} className="md:col-span-1">
+            <Card className="h-full border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center">
                   <Bell className="w-5 h-5 mr-2 text-primary-500" />
@@ -357,8 +395,8 @@ export default function DashboardPage() {
           </motion.div>
 
           {/* 통계 카드 */}
-          <motion.div variants={itemVariants}>
-            <Card className="border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+          <motion.div variants={itemVariants} className="md:col-span-1">
+            <Card className="h-full border-none shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center">
                   <Activity className="w-5 h-5 mr-2 text-primary-500" />
@@ -407,7 +445,7 @@ export default function DashboardPage() {
 
           {/* 지도 미리보기 카드 */}
           <motion.div variants={itemVariants} className="md:col-span-2">
-            <Card className="border-none shadow-lg hover:shadow-xl transition-all overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
+            <Card className="h-full border-none shadow-lg hover:shadow-xl transition-all overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center">
                   <Map className="w-5 h-5 mr-2 text-primary-500" />

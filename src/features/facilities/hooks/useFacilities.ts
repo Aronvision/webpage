@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Facility, FacilityFilter } from '../types';
 import { getAllFacilities, getFilteredFacilities } from '../api';
@@ -10,21 +10,20 @@ export function useFacilities(initialFilter?: FacilityFilter) {
   const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
 
   // 필터링된 시설 목록 가져오기
-  const {
-    data: facilities = [],
-    isLoading,
-    isError,
-    error,
-    refetch
-  } = useQuery({
+  const result = useQuery({
     queryKey: ['facilities', filter],
-    queryFn: () => {
-      // 필터가 비어있으면 모든 시설 가져오기
-      if (!filter.terminal && !filter.floor && (!filter.category || filter.category === 'all') && !filter.searchQuery) {
-        return getAllFacilities();
+    queryFn: async () => {
+      try {
+        // 필터가 비어있으면 모든 시설 가져오기
+        if (!filter.terminal && !filter.floor && (!filter.category || filter.category === 'all') && !filter.searchQuery) {
+          return await getAllFacilities();
+        }
+        // 필터가 있으면 필터링된 시설 가져오기
+        return await getFilteredFacilities(filter);
+      } catch (err) {
+        console.error('시설 목록 가져오기 오류:', err);
+        return [] as Facility[];
       }
-      // 필터가 있으면 필터링된 시설 가져오기
-      return getFilteredFacilities(filter);
     },
     staleTime: 1000 * 60 * 5, // 5분 동안 데이터 캐싱
     gcTime: 1000 * 60 * 30 // 30분 동안 캐시 유지
@@ -41,14 +40,14 @@ export function useFacilities(initialFilter?: FacilityFilter) {
   }, []);
 
   return {
-    facilities,
-    isLoading,
-    isError,
-    error,
+    facilities: result.data || [],
+    isLoading: result.isLoading,
+    isError: result.isError,
+    error: result.error,
     filter,
     updateFilter,
     selectedFacility,
     selectFacility,
-    refetch
+    refetch: result.refetch
   };
 } 
