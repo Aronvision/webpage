@@ -340,7 +340,10 @@ function FacilityDetailPage({ params }) {
           </DialogHeader>
           <DialogFooter className="flex justify-center pt-2">
             <Button 
-              onClick={() => setSafetySeatDialogOpen(false)}
+              onClick={() => {
+                setSafetySeatDialogOpen(false);
+                router.push(`/navigation/${params.id}`);
+              }}
               className="bg-red-500 hover:bg-red-600 text-white"
             >
               안내 시작
