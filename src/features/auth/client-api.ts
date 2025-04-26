@@ -10,7 +10,7 @@ const getBaseUrl = () => {
     return origin;
   }
   // 서버 측에서는 환경 변수 사용
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 };
 
 export interface RegisterUserParams {

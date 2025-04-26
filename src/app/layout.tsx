@@ -30,7 +30,9 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning className={`${inter.variable} ${robotoMono.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <Providers>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </Providers>
       </body>
     </html>

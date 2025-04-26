@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // CORS 헤더 설정을 위한 헬퍼 함수
 const getCorsHeaders = () => {
   // API URL에서 origin 추출
-  const allowedOrigin = process.env.NEXTAUTH_URL || 'https://mobile-ten-rho.vercel.app';
+  const allowedOrigin = process.env.NEXTAUTH_URL || 'http://localhost:3001';
   
   return {
     'Access-Control-Allow-Origin': allowedOrigin,

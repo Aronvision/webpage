@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { MapPin, ChevronLeft, Clock, Phone, Info, Calendar, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +31,9 @@ function FacilityDetailPage({ params }) {
   const { data: session } = useSession();
   const router = useRouter();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [luggageDialogOpen, setLuggageDialogOpen] = useState(false);
+  const [safetySeatDialogOpen, setSafetySeatDialogOpen] = useState(false);
 
   // 시설 데이터 가져오기
   const { facility, isLoading, isError } = useFacility(params.id);
@@ -254,10 +258,10 @@ function FacilityDetailPage({ params }) {
                   >
                     <Button 
                       className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium shadow-md"
-                      onClick={() => router.push('/reservations/new')}
+                      onClick={() => setConfirmDialogOpen(true)}
                     >
                       <Calendar className="w-4 h-4 mr-2" />
-                      <span className="truncate">이 위치로 로봇 예약하기</span>
+                      <span className="truncate">목적지 설정하기</span>
                     </Button>
                   </motion.div>
                 </div>
@@ -279,6 +283,71 @@ function FacilityDetailPage({ params }) {
           </motion.div>
         </motion.div>
       </main>
+
+      {/* 이동 확인 다이얼로그 */}
+      <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-bold">해당 위치로 이동하시겠어요?</DialogTitle>
+            <DialogDescription className="text-center">
+              {facility?.name}(으)로 이동할 준비가 되셨나요?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-row justify-center gap-4 sm:justify-center">
+            <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
+              아니요
+            </Button>
+            <Button 
+              onClick={() => {
+                setConfirmDialogOpen(false);
+                setTimeout(() => setLuggageDialogOpen(true), 300);
+              }}
+            >
+              예
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 짐 안내 다이얼로그 */}
+      <Dialog open={luggageDialogOpen} onOpenChange={setLuggageDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-bold">짐을 넣어주세요</DialogTitle>
+            <DialogDescription className="text-center">
+              이동을 시작하기 전에 짐을 안전하게 보관함에 넣어주세요.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex justify-center">
+            <Button onClick={() => {
+              setLuggageDialogOpen(false);
+              setTimeout(() => setSafetySeatDialogOpen(true), 300);
+            }}>
+              완료
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 안전 확인 다이얼로그 */}
+      <Dialog open={safetySeatDialogOpen} onOpenChange={setSafetySeatDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-bold">안전 확인</DialogTitle>
+            <DialogDescription className="text-center py-2">
+              짐을 안전하게 보관하시고 좌석에 안정적으로 탑승하셨는지 확인해주세요.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex justify-center pt-2">
+            <Button 
+              onClick={() => setSafetySeatDialogOpen(false)}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              안내 시작
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 

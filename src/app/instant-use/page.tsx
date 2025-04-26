@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import { useRosConnection } from '@/hooks/use-ros-connection';
 
 interface MobilityDevice {
   id: string;
@@ -30,6 +32,21 @@ export default function InstantUsePage() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const { toast } = useToast();
+  
+  // ROS 연결 훅 사용
+  const { 
+    isConnected, 
+    error: rosError, 
+    sendFavoriteDevice,
+    connect
+  } = useRosConnection({
+    url: 'ws://localhost:9090', // ROS 브릿지 서버 주소 설정
+    autoConnect: true,
+    reconnectInterval: 5000, // 5초마다 재연결 시도
+    maxReconnectAttempts: 20, // 최대 20번 재연결 시도
+    heartbeatInterval: 3000 // 3초마다 하트비트 전송
+  });
 
   // 모빌리티 디바이스 데이터 (실제로는 API에서 가져올 것)
   const mobilityDevices: MobilityDevice[] = [
@@ -74,6 +91,17 @@ export default function InstantUsePage() {
       available: true
     }
   ];
+
+  // ROS 연결 상태 확인
+  useEffect(() => {
+    if (rosError) {
+      toast({
+        title: "ROS 연결 오류",
+        description: "ROS 브릿지 서버에 연결할 수 없습니다.",
+        variant: "destructive",
+      });
+    }
+  }, [rosError, toast]);
 
   // 인증되지 않은 경우 로그인 페이지로 리디렉션
   useEffect(() => {
@@ -136,6 +164,48 @@ export default function InstantUsePage() {
     setShowDeviceInfo(true);
   };
 
+  // 찜하기 기능 처리
+  const handleFavoriteDevice = () => {
+    if (!selectedDevice) return;
+    
+    if (!isConnected) {
+      toast({
+        title: "ROS 연결 오류",
+        description: "ROS 브릿지 서버에 연결되어 있지 않습니다. 대신 로컬 테스트로 처리합니다.",
+      });
+      // 연결 없이도 테스트용 토스트 표시
+      toast({
+        title: "테스트: 찜하기 완료",
+        description: `${selectedDevice.id} 모빌리티가 찜 목록에 추가되었습니다.`,
+      });
+      return;
+    }
+    
+    const success = sendFavoriteDevice(selectedDevice.id);
+    
+    if (success) {
+      toast({
+        title: "찜하기 완료",
+        description: `${selectedDevice.id} 모빌리티가 찜 목록에 추가되었습니다.`,
+      });
+    } else {
+      toast({
+        title: "찜하기 실패",
+        description: "ROS 토픽 발행 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 맵 헤더에 ROS 연결 테스트 버튼 추가
+  const handleTestConnect = () => {
+    connect();
+    toast({
+      title: "ROS 연결 시도",
+      description: "ROS 브릿지 서버에 연결을 시도합니다."
+    });
+  };
+
   const renderBatteryIcon = (level: number) => {
     if (level > 75) return <Battery className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />;
     if (level > 25) return <Battery className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />;
@@ -168,7 +238,15 @@ export default function InstantUsePage() {
             <h1 className="text-base sm:text-lg font-semibold">바로 이용하기</h1>
           </div>
           
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="h-7 sm:h-8 text-xs"
+              onClick={handleTestConnect}
+            >
+              ROS 연결 테스트
+            </Button>
             <Button 
               variant="outline" 
               size="icon"
@@ -280,6 +358,16 @@ export default function InstantUsePage() {
           </Button>
         </div>
 
+        {/* ROS 연결 상태 표시 */}
+        <div className="absolute left-3 top-3 sm:left-4 sm:top-4">
+          <Badge
+            variant={isConnected ? "default" : "outline"}
+            className={`text-[10px] sm:text-xs ${isConnected ? "bg-green-500 hover:bg-green-600" : "text-red-500 border-red-300"}`}
+          >
+            {isConnected ? "ROS 연결됨" : "ROS 연결 안됨"}
+          </Badge>
+        </div>
+
         {/* 하단 범례 */}
         <div className="absolute left-3 sm:left-4 bottom-3 sm:bottom-4 flex gap-2 sm:gap-3 bg-white p-1.5 sm:p-2 rounded-lg shadow-md">
           <div className="flex items-center">
@@ -354,10 +442,13 @@ export default function InstantUsePage() {
                 <Button 
                   variant="outline"
                   className="py-4 sm:py-6 h-auto flex-col gap-1 sm:gap-2 border-gray-200"
-                  onClick={() => alert('찜하기 기능 준비 중입니다.')}
+                  onClick={handleFavoriteDevice}
+                  disabled={!isConnected && !selectedDevice?.available}
                 >
                   <span className="text-base sm:text-lg font-semibold">찜하기</span>
-                  <span className="text-[10px] sm:text-xs text-gray-500">BETA</span>
+                  <span className="text-[10px] sm:text-xs text-gray-500">
+                    {isConnected ? "ROS 토픽 발행" : "테스트 모드"}
+                  </span>
                 </Button>
                 <Button 
                   className="py-4 sm:py-6 h-auto flex-col gap-1 sm:gap-2 bg-blue-500 hover:bg-blue-600"

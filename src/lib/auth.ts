@@ -20,9 +20,9 @@ export const authOptions: NextAuthOptions = {
           console.log(`인증 시도: ${credentials.email}`);
           
           // 상대 경로 대신 절대 경로 사용
-          // 환경 변수 기반 URL 설정
+          // 환경 변수 기반 URL 설정 - 포트 번호를 3001로 수정
           const baseUrl = process.env.NEXTAUTH_URL || 
-                         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+                         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
           
           const response = await fetch(`${baseUrl}/api/auth/login`, {
             method: 'POST',

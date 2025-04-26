@@ -69,8 +69,10 @@ export default function QRScannerView() {
                 setScanResult(validatedData);
                 setError(null);
                 
-                // 결과 페이지로 이동 (선택적)
-                // router.push(`/qr-result?data=${encodeURIComponent(decodedText)}`);
+                // 스캔 성공 후 다음 페이지로 이동
+                setTimeout(() => {
+                  router.push('/qr-result');
+                }, 1500); // 1.5초 후 이동하여 결과를 잠시 보여줌
               } catch (err) {
                 console.error("QR 코드 데이터 파싱 오류:", err);
                 if (err instanceof SyntaxError) {
@@ -106,6 +108,11 @@ export default function QRScannerView() {
     router.push('/qr-generate');
   };
 
+  const handleNext = () => {
+    // 다음 페이지로 이동
+    router.push('/qr-result');
+  };
+
   const handleScanAgain = () => {
     setScanResult(null);
     setError(null);
@@ -131,6 +138,11 @@ export default function QRScannerView() {
             
             setScanResult(validatedData);
             setError(null);
+            
+            // 스캔 성공 후 다음 페이지로 이동
+            setTimeout(() => {
+              router.push('/qr-result');
+            }, 1500); // 1.5초 후 이동하여 결과를 잠시 보여줌
           } catch (err) {
             console.error("QR 코드 데이터 파싱 오류:", err);
             if (err instanceof SyntaxError) {
@@ -261,11 +273,19 @@ export default function QRScannerView() {
         )}
       </div>
 
-      {/* 하단 버튼 */}
-      <div className="p-4 bg-black text-center z-10">
+      {/* 하단 버튼 영역 */}
+      <div className="p-4 bg-black z-10 space-y-2">
+        {/* 다음 페이지로 이동 버튼 추가 */}
+        <button
+          onClick={handleNext}
+          className="bg-blue-600 text-white py-3 px-6 rounded-md w-full font-medium text-lg"
+        >
+          페이지 넘어가기
+        </button>
+        
         <button
           onClick={handleManualInput}
-          className="bg-transparent text-white py-4 px-6 rounded-md w-full font-medium text-lg"
+          className="bg-transparent text-white py-3 px-6 rounded-md w-full font-medium text-lg"
         >
           QR 코드 생성하기
         </button>
