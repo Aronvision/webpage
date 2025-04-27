@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Html5Qrcode } from "html5-qrcode";
 import { X } from "lucide-react";
 import { z } from "zod";
+import mqtt, { IClientOptions } from 'mqtt'; // 메인 패키지 사용 및 타입 import
 
 // QR 코드 데이터 스키마 정의 (생성 페이지와 일치)
 const qrDataSchema = z.object({
@@ -23,6 +24,18 @@ export default function QRScannerView() {
   const [error, setError] = useState<string | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const qrBoxRef = useRef<HTMLDivElement>(null);
+  const [isConnectingMqtt, setIsConnectingMqtt] = useState(false);
+  const mqttClientRef = useRef<mqtt.MqttClient | null>(null);
+
+  // MQTT 연결 설정
+  const mqttBrokerUrl = process.env.NEXT_PUBLIC_MQTT_BROKER_URL || 'ws://your_broker_address:9001';
+  const mqttOptions: Omit<IClientOptions, 'host' | 'port' | 'protocol'> = {
+    // host, port, protocol은 URL에서 가져오므로 제거
+    username: process.env.NEXT_PUBLIC_MQTT_USERNAME || 'your_username',
+    password: process.env.NEXT_PUBLIC_MQTT_PASSWORD || 'your_password',
+    clientId: `webapp_client_${Math.random().toString(16).substr(2, 8)}`,
+    // 추가 옵션: connectTimeout 등
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -99,6 +112,16 @@ export default function QRScannerView() {
     }
   }, [router]);
 
+  useEffect(() => {
+    // 컴포넌트 언마운트 시 MQTT 연결 해제
+    return () => {
+      if (mqttClientRef.current?.connected) {
+        mqttClientRef.current.end();
+        console.log('MQTT client disconnected on component unmount.');
+      }
+    };
+  }, []);
+
   const handleClose = () => {
     router.back();
   };
@@ -108,30 +131,79 @@ export default function QRScannerView() {
     router.push('/qr-generate');
   };
 
-  const handleNext = () => {
-    // 다음 페이지로 이동
+  const handleNext = async () => {
+    // 페이지 이동 (이 부분은 scanResult 없이 이동하면 문제가 될 수 있으므로 주의)
     router.push('/qr-result');
 
-    // 노트북 연결 API 호출 (백그라운드에서 실행)
-    fetch('/api/test-notebook-connection', { method: 'POST' })
-      .then(async (response) => {
-        if (!response.ok) {
-          // 응답이 성공적이지 않으면 에러 처리
-          const data = await response.json().catch(() => ({})); // JSON 파싱 실패 대비
-          throw new Error(data.message || `HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Notebook connection signal sent successfully:', data);
-        // 성공 시 추가 작업 (예: 토스트 메시지) - 선택 사항
-        // toast.info('노트북 연결 신호 전송됨');
-      })
-      .catch(error => {
-        console.error('Failed to send notebook connection signal:', error);
-        // 실패 시 사용자에게 알림 (예: 토스트 메시지) - 선택 사항
-        // toast.error('노트북 연결 신호 전송 실패');
-      });
+    // MQTT 메시지 발행 시도
+    setIsConnectingMqtt(true);
+    setError(null); // 이전 에러 초기화
+
+    try {
+      console.log('Attempting to connect to MQTT broker...');
+      // 기존 연결이 있으면 재사용, 없으면 새로 연결
+      if (!mqttClientRef.current || !mqttClientRef.current.connected) {
+        // 첫 번째 인자로 전체 URL 전달
+        const client = mqtt.connect(mqttBrokerUrl, mqttOptions);
+        mqttClientRef.current = client;
+
+        await new Promise<void>((resolve, reject) => {
+          client.on('connect', () => {
+            console.log('Successfully connected to MQTT broker via WebSocket');
+            resolve();
+          });
+
+          client.on('error', (err) => {
+            console.error('MQTT Connection Error:', err.message, err.name, err.stack);
+            setError(`MQTT 브로커 연결에 실패했습니다: ${err.message}`);
+            client.end(); // 연결 종료
+            reject(err);
+          });
+
+          // 타임아웃 설정 (예: 5초)
+          const timeoutId = setTimeout(() => {
+             console.error('MQTT connection timed out');
+             setError('MQTT 브로커 연결 시간이 초과되었습니다.');
+             client.end();
+             reject(new Error('Connection timeout'));
+          }, 5000);
+
+          client.on('connect', () => clearTimeout(timeoutId)); // 연결 성공 시 타임아웃 제거
+          client.on('error', () => clearTimeout(timeoutId)); // 에러 시 타임아웃 제거
+        });
+      }
+
+       // 연결 성공 후 메시지 발행 (scanResult 조건 제거)
+      if (mqttClientRef.current?.connected) {
+          const topic = 'scan/complete';
+          // 발행할 데이터를 "hi!" 메시지로 고정
+          const message = JSON.stringify({
+            message: "hi!", // 고정 메시지
+            timestamp: new Date().toISOString(),
+          });
+
+          mqttClientRef.current.publish(topic, message, { qos: 0, retain: false }, (err) => {
+            if (err) {
+              console.error('MQTT Publish Error:', err.message, err.name, err.stack);
+              setError(`MQTT 메시지 발행에 실패했습니다: ${err.message}`);
+            } else {
+              console.log(`Successfully published to topic ${topic}: ${message}`);
+              // 성공적으로 발행 후 연결 종료 또는 유지 결정
+              // mqttClientRef.current?.end();
+            }
+          });
+      }
+      // scanResult 없는 경우의 경고 로그 제거
+
+    } catch (error: any) {
+      // 연결 또는 발행 중 발생한 에러는 이미 setError로 처리됨
+      console.error('MQTT operation failed:', error.message || error);
+      if (!error) { // Ensure error is defined before accessing message
+        setError(`MQTT 작업 중 예기치 않은 오류 발생: ${error?.message || '알 수 없는 오류'}`);
+      }
+    } finally {
+      setIsConnectingMqtt(false);
+    }
   };
 
   const handleScanAgain = () => {
@@ -243,7 +315,7 @@ export default function QRScannerView() {
               <div className="absolute inset-0 bg-black bg-opacity-90 z-20 flex flex-col items-center justify-center p-4">
                 <div className="bg-white rounded-lg p-6 w-full max-w-sm">
                   <h3 className="text-xl font-bold mb-4 text-center text-red-600">오류 발생</h3>
-                  <p className="text-center mb-6">{error}</p>
+                  <p className="text-center mb-6 text-red-500">{error}</p>
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={handleScanAgain}
@@ -294,6 +366,13 @@ export default function QRScannerView() {
         )}
       </div>
 
+      {/* MQTT 연결 중 표시 (선택 사항) */}
+      {isConnectingMqtt && (
+         <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
+           <p className="text-white text-lg">MQTT 브로커에 연결 중...</p>
+         </div>
+      )}
+
       {/* 하단 버튼 영역 */}
       <div className="bg-white p-4 border-t border-gray-200 flex justify-around">
         <button
@@ -304,9 +383,10 @@ export default function QRScannerView() {
         </button>
         <button
           onClick={handleNext}
-          className="bg-blue-600 text-white py-2 px-6 rounded-md font-medium"
+          className="bg-blue-600 text-white py-2 px-6 rounded-md font-medium disabled:opacity-50"
+          disabled={isConnectingMqtt} // 연결 중 비활성화
         >
-          페이지 넘어가기
+          {isConnectingMqtt ? '처리 중...' : '페이지 넘어가기'}
         </button>
       </div>
 
