@@ -111,6 +111,27 @@ export default function QRScannerView() {
   const handleNext = () => {
     // 다음 페이지로 이동
     router.push('/qr-result');
+
+    // 노트북 연결 API 호출 (백그라운드에서 실행)
+    fetch('/api/test-notebook-connection', { method: 'POST' })
+      .then(async (response) => {
+        if (!response.ok) {
+          // 응답이 성공적이지 않으면 에러 처리
+          const data = await response.json().catch(() => ({})); // JSON 파싱 실패 대비
+          throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Notebook connection signal sent successfully:', data);
+        // 성공 시 추가 작업 (예: 토스트 메시지) - 선택 사항
+        // toast.info('노트북 연결 신호 전송됨');
+      })
+      .catch(error => {
+        console.error('Failed to send notebook connection signal:', error);
+        // 실패 시 사용자에게 알림 (예: 토스트 메시지) - 선택 사항
+        // toast.error('노트북 연결 신호 전송 실패');
+      });
   };
 
   const handleScanAgain = () => {
@@ -217,14 +238,14 @@ export default function QRScannerView() {
               </div>
             )}
 
-            {/* 에러 메시지 표시 */}
+            {/* 에러 메시지 표시 (QR 스캔 에러 또는 연결 에러) */}
             {error && (
               <div className="absolute inset-0 bg-black bg-opacity-90 z-20 flex flex-col items-center justify-center p-4">
                 <div className="bg-white rounded-lg p-6 w-full max-w-sm">
                   <h3 className="text-xl font-bold mb-4 text-center text-red-600">오류 발생</h3>
                   <p className="text-center mb-6">{error}</p>
                   <div className="flex flex-col gap-2">
-                    <button 
+                    <button
                       onClick={handleScanAgain}
                       className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium"
                     >
@@ -274,20 +295,18 @@ export default function QRScannerView() {
       </div>
 
       {/* 하단 버튼 영역 */}
-      <div className="p-4 bg-black z-10 space-y-2">
-        {/* 다음 페이지로 이동 버튼 추가 */}
-        <button
-          onClick={handleNext}
-          className="bg-blue-600 text-white py-3 px-6 rounded-md w-full font-medium text-lg"
-        >
-          페이지 넘어가기
-        </button>
-        
+      <div className="bg-white p-4 border-t border-gray-200 flex justify-around">
         <button
           onClick={handleManualInput}
-          className="bg-transparent text-white py-3 px-6 rounded-md w-full font-medium text-lg"
+          className="text-blue-600 font-medium"
         >
-          QR 코드 생성하기
+          직접 입력하기
+        </button>
+        <button
+          onClick={handleNext}
+          className="bg-blue-600 text-white py-2 px-6 rounded-md font-medium"
+        >
+          페이지 넘어가기
         </button>
       </div>
 
