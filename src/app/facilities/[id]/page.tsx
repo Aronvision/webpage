@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFacility } from '@/features/facilities/hooks/useFacility';
 import { categoryInfo } from '@/features/facilities/types';
+import mqtt, { IClientOptions, MqttClient } from 'mqtt';
 
 // React Query 클라이언트 생성
 const queryClient = new QueryClient();
@@ -34,9 +35,31 @@ function FacilityDetailPage({ params }) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [luggageDialogOpen, setLuggageDialogOpen] = useState(false);
   const [safetySeatDialogOpen, setSafetySeatDialogOpen] = useState(false);
+  const [isConnectingMqtt, setIsConnectingMqtt] = useState(false);
+  const mqttClientRef = useRef<MqttClient | null>(null);
+
+  // MQTT 연결 설정 (환경 변수 사용 권장)
+  const mqttBrokerUrl = process.env.NEXT_PUBLIC_MQTT_BROKER_URL || 'ws://your_broker_address:9001'; // 실제 브로커 주소로 변경하세요.
+  const mqttOptions: Omit<IClientOptions, 'host' | 'port' | 'protocol'> = {
+    username: process.env.NEXT_PUBLIC_MQTT_USERNAME || 'your_username', // 실제 사용자 이름으로 변경하세요.
+    password: process.env.NEXT_PUBLIC_MQTT_PASSWORD || 'your_password', // 실제 비밀번호로 변경하세요.
+    clientId: `facility_page_${params.id}_${Math.random().toString(16).substr(2, 8)}`,
+    connectTimeout: 5000, // 5초 연결 타임아웃
+  };
 
   // 시설 데이터 가져오기
   const { facility, isLoading, isError } = useFacility(params.id);
+
+  // 컴포넌트 언마운트 시 MQTT 연결 해제
+  useEffect(() => {
+    return () => {
+      if (mqttClientRef.current?.connected) {
+        mqttClientRef.current.end(true, () => { // force = true
+          console.log('MQTT client disconnected on facility page unmount.');
+        });
+      }
+    };
+  }, []);
 
   // 애니메이션 변수
   const containerVariants = {
@@ -92,6 +115,78 @@ function FacilityDetailPage({ params }) {
   }
 
   const categoryStyle = categoryInfo[facility.category]?.color || 'bg-gray-100 text-gray-700 border-gray-200';
+
+  // 안내 시작 및 MQTT 발행 핸들러 (컴포넌트 내부로 이동)
+  async function handleStartNavigationAndPublish() {
+    setSafetySeatDialogOpen(false); // 다이얼로그 닫기
+    router.push(`/navigation/${params.id}`); // 페이지 즉시 이동
+
+    // MQTT 발행 (비동기)
+    setIsConnectingMqtt(true);
+    console.log('Attempting to publish navigation start message...');
+
+    try {
+      // 기존 연결 확인 및 필요시 재연결
+      if (!mqttClientRef.current || !mqttClientRef.current.connected) {
+        console.log('Connecting to MQTT broker...');
+        // 주의: connect는 비동기가 아니지만, 이벤트 기반으로 연결 완료를 확인해야 함
+        const client = mqtt.connect(mqttBrokerUrl, mqttOptions);
+        mqttClientRef.current = client;
+
+        await new Promise<void>((resolve, reject) => {
+          const timeoutId = setTimeout(() => {
+            console.error('MQTT connection timed out.');
+            client.end(true); // 연결 강제 종료
+            reject(new Error('Connection timeout'));
+          }, mqttOptions.connectTimeout || 5000); // 설정된 타임아웃 사용
+
+          client.on('connect', () => {
+            clearTimeout(timeoutId);
+            console.log('Successfully connected to MQTT broker.');
+            resolve();
+          });
+
+          client.on('error', (err) => {
+            clearTimeout(timeoutId);
+            console.error('MQTT Connection Error:', err.message);
+            client.end(true); // 연결 강제 종료
+            reject(err); // 에러를 reject하여 catch 블록에서 처리
+          });
+        });
+      }
+
+      // 연결 성공 확인 후 메시지 발행
+      if (mqttClientRef.current?.connected) {
+        const topic = 'navigation/start';
+        const message = JSON.stringify({
+          command: 'start_navigation',
+          facilityId: params.id,
+          timestamp: new Date().toISOString(),
+        });
+
+        // publish는 콜백 또는 Promise를 반환하지 않으므로, 완료 확인 어려움
+        // fire-and-forget 방식으로 발행 시도
+        mqttClientRef.current.publish(topic, message, { qos: 0, retain: false }, (err) => {
+          if (err) {
+            console.error('MQTT Publish Error:', err.message);
+            // 발행 실패는 네비게이션에 영향을 주지 않음
+          } else {
+            console.log(`Successfully published to topic ${topic}: ${message}`);
+            // 발행 성공 후 연결 유지 또는 종료 결정 (여기서는 유지)
+          }
+        });
+      } else {
+         console.warn('MQTT client not connected, skipping publish.');
+      }
+
+    } catch (error) {
+      // 연결 실패 시 에러 로깅
+      console.error('MQTT operation failed:', error instanceof Error ? error.message : String(error));
+      // 오류가 발생해도 네비게이션은 이미 수행되었으므로 사용자에게 직접 알리지 않음
+    } finally {
+      setIsConnectingMqtt(false); // 로딩 상태 해제
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-50/70 to-sky-50/90">
@@ -340,13 +435,11 @@ function FacilityDetailPage({ params }) {
           </DialogHeader>
           <DialogFooter className="flex justify-center pt-2">
             <Button 
-              onClick={() => {
-                setSafetySeatDialogOpen(false);
-                router.push(`/navigation/${params.id}`);
-              }}
+              onClick={handleStartNavigationAndPublish}
               className="bg-red-500 hover:bg-red-600 text-white"
+              disabled={isConnectingMqtt}
             >
-              안내 시작
+              {isConnectingMqtt ? '처리 중...' : '안내 시작'}
             </Button>
           </DialogFooter>
         </DialogContent>
