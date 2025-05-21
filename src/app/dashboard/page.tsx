@@ -284,7 +284,7 @@ export default function DashboardPage() {
                   >
                     <Button 
                       className="w-full bg-white/90 text-cyan-800 hover:bg-white font-medium shadow-md text-xs sm:text-sm py-2 h-auto whitespace-nowrap"
-                      onClick={() => router.push('/instant-use')}
+                      onClick={() => router.push('/flight-ticket-qr-scan')}
                     >
                       바로 사용하기
                       <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />

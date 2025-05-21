@@ -273,7 +273,7 @@ export default function QRScannerView() {
         {hasCamera ? (
           <>
             {!scanResult && !error && (
-              <div className="absolute top-1/4 left-0 right-0 text-white text-center z-10 px-4">
+              <div className="absolute top-1/4 -translate-y-[40px] left-0 right-0 text-white text-center z-10 px-4">
                 <h2 className="text-2xl font-medium mb-2">QR코드를</h2>
                 <p className="text-2xl font-medium">영역에 맞춰 스캔해주세요.</p>
               </div>

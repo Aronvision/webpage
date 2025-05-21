@@ -25,7 +25,7 @@ export interface RegisterUserParams {
 export async function registerUser({ email, name, password }: RegisterUserParams) {
   try {
     console.log("회원가입 API 호출 시작:", { email, name });
-    const apiUrl = `${getBaseUrl()}/api/auth/register`;
+    const apiUrl = '/api/auth/register'; // 항상 상대 경로 사용
     console.log("사용 중인 API URL:", apiUrl);
     
     // 클라이언트 API 엔드포인트 호출
@@ -69,7 +69,7 @@ export async function registerUser({ email, name, password }: RegisterUserParams
  */
 export async function getUserByEmail(email: string) {
   try {
-    const response = await fetch(`${getBaseUrl()}/api/auth/user?email=${encodeURIComponent(email)}`, {
+    const response = await fetch(`/api/auth/user?email=${encodeURIComponent(email)}`, {
       mode: 'cors',
       credentials: 'include',
     });
@@ -90,7 +90,7 @@ export async function getUserByEmail(email: string) {
  */
 export async function getUserById(id: string) {
   try {
-    const response = await fetch(`${getBaseUrl()}/api/auth/user/${id}`, {
+    const response = await fetch(`/api/auth/user/${id}`, {
       mode: 'cors',
       credentials: 'include',
     });
