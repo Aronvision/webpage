@@ -64,7 +64,6 @@ export default function SignupPage() {
     
     try {
       setIsLoading(true);
-      console.log('회원가입 시도:', { email, name });
       
       // client-api의 registerUser 함수 사용
       const result = await registerUser({
@@ -73,7 +72,6 @@ export default function SignupPage() {
         name
       });
       
-      console.log('회원가입 성공:', result);
       
       // 성공 토스트 메시지
       toast({
@@ -86,7 +84,6 @@ export default function SignupPage() {
       router.push('/login?registered=true');
       
     } catch (error) {
-      console.error('회원가입 오류:', error);
       
       // 오류 메시지 처리
       let errorMessage = '회원가입 중 오류가 발생했습니다.';

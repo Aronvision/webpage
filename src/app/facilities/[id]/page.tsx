@@ -110,7 +110,6 @@ function FacilityDetailPage({ params }) {
     return () => {
       if (mqttClientRef.current?.connected) {
         mqttClientRef.current.end(true, () => {
-          console.log('MQTT client disconnected on facility page unmount.');
         });
       }
     };
@@ -181,32 +180,27 @@ function FacilityDetailPage({ params }) {
 
     // MQTT 발행 (비동기)
     setIsConnectingMqtt(true);
-    console.log('Attempting to publish navigation start message...');
 
     try {
       // 기존 연결 확인 및 필요시 재연결
       if (!mqttClientRef.current || !mqttClientRef.current.connected) {
-        console.log('Connecting to MQTT broker...');
         // 주의: connect는 비동기가 아니지만, 이벤트 기반으로 연결 완료를 확인해야 함
         const client = mqtt.connect(mqttBrokerUrl, mqttOptions);
         mqttClientRef.current = client;
 
         await new Promise<void>((resolve, reject) => {
           const timeoutId = setTimeout(() => {
-            console.error('MQTT connection timed out.');
             client.end(true); // 연결 강제 종료
             reject(new Error('Connection timeout'));
           }, mqttOptions.connectTimeout || 5000); // 설정된 타임아웃 사용
 
           client.on('connect', () => {
             clearTimeout(timeoutId);
-            console.log('Successfully connected to MQTT broker.');
             resolve();
           });
 
           client.on('error', (err) => {
             clearTimeout(timeoutId);
-            console.error('MQTT Connection Error:', err.message);
             client.end(true); // 연결 강제 종료
             reject(err); // 에러를 reject하여 catch 블록에서 처리
           });
@@ -228,20 +222,16 @@ function FacilityDetailPage({ params }) {
         // fire-and-forget 방식으로 발행 시도
         mqttClientRef.current.publish(topic, message, { qos: 0, retain: false }, (err) => {
           if (err) {
-            console.error('MQTT Publish Error:', err.message);
             // 발행 실패는 네비게이션에 영향을 주지 않음
           } else {
-            console.log(`Successfully published to topic ${topic}: ${message}`);
             // 발행 성공 후 연결 유지 또는 종료 결정 (여기서는 유지)
           }
         });
       } else {
-         console.warn('MQTT client not connected, skipping publish.');
       }
 
     } catch (error) {
       // 연결 실패 시 에러 로깅
-      console.error('MQTT operation failed:', error instanceof Error ? error.message : String(error));
       // 오류가 발생해도 네비게이션은 이미 수행되었으므로 사용자에게 직접 알리지 않음
     } finally {
       setIsConnectingMqtt(false); // 로딩 상태 해제

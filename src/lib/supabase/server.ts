@@ -19,22 +19,17 @@ export async function createClient() {
       });
       
       // 환경 변수 디버깅 정보
-      console.log("NODE_ENV:", process.env.NODE_ENV);
-      console.log("NEXT_PUBLIC_SUPABASE_URL 값:", supabaseUrl);
-      console.log("SUPABASE_SERVICE_ROLE_KEY 길이:", supabaseKey ? supabaseKey.length : 0);
       
       // 프로덕션 환경에서는 하드코딩된 값을 사용하지 않도록 주의
       if (process.env.NODE_ENV === 'production') {
         throw new Error("프로덕션 환경에서 Supabase 연결 정보가 누락되었습니다. Vercel 대시보드에서 환경 변수를 확인하세요.");
       } else {
         // 개발 환경일 경우 .env.local 파일의 값을 사용
-        console.warn("개발 환경에서 .env.local 파일의 환경 변수를 사용합니다.");
       }
     }
     
     // Supabase 클라이언트 생성
     try {
-      console.log("Supabase 클라이언트 생성 시도:", { url: supabaseUrl?.substring(0, 15) + '...' });
       
       return createSupabaseClient(
         supabaseUrl!,
@@ -82,9 +77,6 @@ export async function createPureClient() {
       });
       
       // 환경 변수 디버깅 정보
-      console.log("NODE_ENV:", process.env.NODE_ENV);
-      console.log("NEXT_PUBLIC_SUPABASE_URL 값:", supabaseUrl);
-      console.log("SUPABASE_SERVICE_ROLE_KEY 길이:", supabaseKey ? supabaseKey.length : 0);
       
       // 프로덕션 환경에서는 하드코딩된 값을 사용하지 않도록 주의
       if (process.env.NODE_ENV === 'production') {
@@ -92,7 +84,6 @@ export async function createPureClient() {
       }
     }
     
-    console.log("Supabase Pure 클라이언트 생성 시도:", { url: supabaseUrl?.substring(0, 15) + '...' });
     
     return createSupabaseClient(
       supabaseUrl!,

@@ -20,14 +20,11 @@ export default function DashboardPage() {
 
   // 디버깅을 위한 세션 상태 로깅
   useEffect(() => {
-    console.log("대시보드 페이지 - 세션 상태:", status);
-    console.log("대시보드 페이지 - 세션 데이터:", session);
   }, [status, session]);
 
   // 인증되지 않은 경우 로그인 페이지로 리디렉션
   useEffect(() => {
     if (status === 'unauthenticated') {
-      console.log("인증되지 않음, 로그인 페이지로 리디렉션");
       router.push('/login');
     }
   }, [status, router]);

@@ -30,7 +30,6 @@ export function useAuthCheck({
     
     // 인증되지 않은 경우
     if (status === 'unauthenticated') {
-      console.log('인증되지 않음, 리다이렉션:', redirectTo);
       
       if (showToast) {
         toast({
