@@ -83,7 +83,6 @@ export default function QRScannerView() {
     return () => {
       if (mqttClientRef.current?.connected) {
         mqttClientRef.current.end();
-        console.log('MQTT client disconnected on component unmount.');
       }
     };
   }, []);
@@ -106,7 +105,6 @@ export default function QRScannerView() {
     setError(null); // 이전 에러 초기화
 
     try {
-      console.log('Attempting to connect to MQTT broker...');
       // 기존 연결이 있으면 재사용, 없으면 새로 연결
       if (!mqttClientRef.current || !mqttClientRef.current.connected) {
         // 첫 번째 인자로 전체 URL 전달
@@ -115,7 +113,6 @@ export default function QRScannerView() {
 
         await new Promise<void>((resolve, reject) => {
           client.on('connect', () => {
-            console.log('Successfully connected to MQTT broker via WebSocket');
             resolve();
           });
 
@@ -153,7 +150,6 @@ export default function QRScannerView() {
               console.error('MQTT Publish Error:', err.message, err.name, err.stack);
               setError(`MQTT 메시지 발행에 실패했습니다: ${err.message}`);
             } else {
-              console.log(`Successfully published to topic ${topic}: ${message}`);
               // 성공적으로 발행 후 연결 종료 또는 유지 결정
               // mqttClientRef.current?.end();
             }
@@ -200,7 +196,6 @@ export default function QRScannerView() {
 
   // QR 스캔 성공 시 처리 함수
   const handleScanSuccess = (decodedText: string) => {
-    console.log("스캔 결과:", decodedText);
     
     // 즉시 스캔 상태 변경으로 UI 숨김
     setIsScanning(false);

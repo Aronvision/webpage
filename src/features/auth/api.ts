@@ -20,13 +20,11 @@ export async function registerUser({ email, name, password }: RegisterUserParams
     });
 
     if (error) {
-      console.error("회원가입 오류:", error);
       throw new Error(error.message);
     }
 
     return { success: true, userId: data };
   } catch (error) {
-    console.error("회원가입 중 오류 발생:", error);
     throw error;
   }
 }
@@ -45,13 +43,11 @@ export async function getUserByEmail(email: string) {
       .single();
 
     if (error) {
-      console.error("사용자 조회 오류:", error);
       return null;
     }
 
     return data;
   } catch (error) {
-    console.error("사용자 조회 중 오류 발생:", error);
     return null;
   }
 }
@@ -70,13 +66,11 @@ export async function getUserById(id: string) {
       .single();
 
     if (error) {
-      console.error("사용자 조회 오류:", error);
       return null;
     }
 
     return data;
   } catch (error) {
-    console.error("사용자 조회 중 오류 발생:", error);
     return null;
   }
 } 

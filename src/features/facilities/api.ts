@@ -11,7 +11,6 @@ export async function getAllFacilities(): Promise<Facility[]> {
     .select('*');
   
   if (error) {
-    console.error('시설 데이터 가져오기 오류:', error);
     return [];
   }
   
@@ -47,7 +46,6 @@ export async function getFilteredFacilities(filter: FacilityFilter): Promise<Fac
   const { data, error } = await query;
   
   if (error) {
-    console.error('필터링된 시설 데이터 가져오기 오류:', error);
     return [];
   }
   
@@ -64,7 +62,6 @@ export async function getFacilityById(id: string): Promise<Facility | null> {
     .single();
   
   if (error) {
-    console.error('시설 데이터 가져오기 오류:', error.message);
     return null;
   }
   

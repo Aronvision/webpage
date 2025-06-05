@@ -21,7 +21,6 @@ export function useFacilities(initialFilter?: FacilityFilter) {
         // 필터가 있으면 필터링된 시설 가져오기
         return await getFilteredFacilities(filter);
       } catch (err) {
-        console.error('시설 목록 가져오기 오류:', err);
         return [] as Facility[];
       }
     },

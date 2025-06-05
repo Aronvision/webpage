@@ -51,36 +51,29 @@ export default function NavigationPage({ params }: NavigationPageProps) {
       connectTimeout: 5000, // 추가: 5초 연결 타임아웃
     };
 
-    // console.log(`Attempting to connect to MQTT broker at ${brokerUrl}:${port}`); // 수정
-    console.log(`Attempting to connect to MQTT broker at ${brokerUrl}`);
     const client = mqtt.connect(brokerUrl, options);
     setMqttClient(client);
 
     client.on('connect', () => {
-      console.log('Successfully connected to MQTT broker via WebSocket');
       setConnectionStatus('connected');
       client.subscribe(goalReachedTopic, { qos: 1 }, (error) => {
         if (error) {
           console.error(`Failed to subscribe to topic ${goalReachedTopic}:`, error);
           toast.error('MQTT 구독 오류', { description: `토픽 구독 실패: ${goalReachedTopic}` });
         } else {
-          console.log(`Successfully subscribed to topic: ${goalReachedTopic}`);
         }
       });
     });
 
     client.on('message', (topic, message) => {
       const messageString = message.toString();
-      console.log(`Received message from topic ${topic}: ${messageString}`);
 
       if (topic === goalReachedTopic) {
         try {
           const payload = JSON.parse(messageString);
           if (payload.status === 'arrived') {
-            console.log('Goal reached message received!');
             // toast.success('안내가 완료되었습니다 🎉');
             setCompletionDialogOpen(true);
-            console.log('111');// 필요하다면 여기서 추가적인 UI 변경 로직을 넣을 수 있습니다.
           }
         } catch (e) {
           console.error('Failed to parse message JSON:', e);
@@ -95,13 +88,11 @@ export default function NavigationPage({ params }: NavigationPageProps) {
     });
 
     client.on('close', () => {
-      console.log('MQTT connection closed');
     });
 
     // 컴포넌트 언마운트 시 MQTT 연결 종료
     return () => {
       if (client) {
-        console.log('Disconnecting MQTT client...');
         client.end();
         setMqttClient(null);
       }
@@ -132,7 +123,6 @@ export default function NavigationPage({ params }: NavigationPageProps) {
         });
       });
 
-      console.log('Navigation completion message published successfully');
       setCompletionDialogOpen(false);
       router.push('/dashboard');
     } catch (error) {

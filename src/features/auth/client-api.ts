@@ -24,9 +24,7 @@ export interface RegisterUserParams {
  */
 export async function registerUser({ email, name, password }: RegisterUserParams) {
   try {
-    console.log("회원가입 API 호출 시작:", { email, name });
     const apiUrl = '/api/auth/register'; // 항상 상대 경로 사용
-    console.log("사용 중인 API URL:", apiUrl);
     
     // 클라이언트 API 엔드포인트 호출
     const response = await fetch(apiUrl, {
@@ -40,14 +38,12 @@ export async function registerUser({ email, name, password }: RegisterUserParams
     });
 
     const responseText = await response.text();
-    console.log("서버 응답 상태:", response.status, response.statusText);
     
     let responseData;
     try {
       responseData = responseText ? JSON.parse(responseText) : {};
     } catch (parseError) {
       console.error("서버 응답 파싱 오류:", parseError);
-      console.log("원본 응답 텍스트:", responseText);
       throw new Error('서버 응답을 파싱할 수 없습니다.');
     }
 
@@ -56,7 +52,6 @@ export async function registerUser({ email, name, password }: RegisterUserParams
       throw new Error(responseData.message || '회원가입 중 오류가 발생했습니다.');
     }
 
-    console.log("회원가입 성공:", responseData);
     return { success: true, userId: responseData.userId };
   } catch (error) {
     console.error("회원가입 중 오류 발생:", error);

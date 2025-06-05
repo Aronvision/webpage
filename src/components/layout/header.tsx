@@ -62,8 +62,6 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   
   // 디버깅용 로깅 추가
   useEffect(() => {
-    console.log('Header - isLoggedIn prop:', isLoggedIn);
-    console.log('Header - userIsLoggedIn:', userIsLoggedIn);
   }, [isLoggedIn, userIsLoggedIn]);
   
   useEffect(() => {

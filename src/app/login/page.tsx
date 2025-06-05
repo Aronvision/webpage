@@ -52,7 +52,6 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       
-      console.log('로그인 시도:', { email });
       
       const result = await signIn('credentials', {
         email,
@@ -61,7 +60,6 @@ export default function LoginPage() {
         callbackUrl: '/dashboard',
       });
       
-      console.log('로그인 결과:', result);
       
       if (!result?.ok) {
         // 로그인 실패

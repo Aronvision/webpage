@@ -15,7 +15,6 @@ export function useFacility(id: string) {
         }
         return result as Facility;
       } catch (err) {
-        console.error('시설 정보 조회 중 오류 발생:', err);
         throw new Error('시설 정보를 가져오는 중 오류가 발생했습니다');
       }
     },

@@ -35,9 +35,6 @@ export async function GET(
   
   try {
     // 환경 변수 체크를 위한 상세 디버깅 코드
-    console.log("환경 변수 디버깅 정보:");
-    console.log("NEXT_PUBLIC_SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-    console.log("SUPABASE_SERVICE_ROLE_KEY 길이:", process.env.SUPABASE_SERVICE_ROLE_KEY ? process.env.SUPABASE_SERVICE_ROLE_KEY.length : 0);
     
     const id = params.id;
 
@@ -51,12 +48,8 @@ export async function GET(
       );
     }
 
-    console.log("ID로 사용자 조회 시작:", { id });
-    console.log("Supabase 클라이언트 생성 시작");
     const supabase = await createClient();
-    console.log("Supabase 클라이언트 생성 성공");
     
-    console.log("Supabase ID로 사용자 조회 쿼리 실행");
     const { data, error } = await supabase
       .from('users')
       .select('id, email, name, created_at')
@@ -64,10 +57,6 @@ export async function GET(
       .single();
 
     if (error) {
-      console.error("사용자 조회 오류 상세:", error);
-      console.error("오류 코드:", error.code);
-      console.error("오류 메시지:", error.message);
-      console.error("오류 상세:", error.details);
       
       return NextResponse.json(
         { message: "사용자를 찾을 수 없습니다.", code: error.code, details: error.details },
@@ -78,16 +67,11 @@ export async function GET(
       );
     }
 
-    console.log("사용자 조회 성공:", { userId: data.id, email: data.email });
     return NextResponse.json(data, {
       headers: corsHeaders
     });
   } catch (error) {
-    console.error("사용자 조회 중 일반 오류 발생:", error);
     if (error instanceof Error) {
-      console.error("오류 이름:", error.name);
-      console.error("오류 메시지:", error.message);
-      console.error("오류 스택:", error.stack);
     }
     
     return NextResponse.json(

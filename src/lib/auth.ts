@@ -12,12 +12,10 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          console.log("인증 실패: 이메일 또는 비밀번호 누락");
           throw new Error("이메일과 비밀번호를 모두 입력해주세요.");
         }
 
         try {
-          console.log(`인증 시도: ${credentials.email}`);
           
           // 상대 경로 대신 절대 경로 사용
           // 환경 변수 기반 URL 설정 - 포트 번호를 3001로 수정
@@ -43,7 +41,6 @@ export const authOptions: NextAuthOptions = {
 
           const user = data;
           
-          console.log("인증 성공:", user);
           
           if (!user || !user.id) {
             console.error("인증 실패: 유효하지 않은 사용자 데이터");
