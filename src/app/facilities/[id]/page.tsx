@@ -39,22 +39,77 @@ function FacilityDetailPage({ params }) {
   const mqttClientRef = useRef<MqttClient | null>(null);
 
   // MQTT 연결 설정 (환경 변수 사용 권장)
-  const mqttBrokerUrl = process.env.NEXT_PUBLIC_MQTT_BROKER_URL || 'ws://your_broker_address:9001'; // 실제 브로커 주소로 변경하세요.
+  const mqttBrokerUrl = process.env.NEXT_PUBLIC_MQTT_BROKER_URL || 'ws://your_broker_address:9001';
   const mqttOptions: Omit<IClientOptions, 'host' | 'port' | 'protocol'> = {
-    username: process.env.NEXT_PUBLIC_MQTT_USERNAME || 'your_username', // 실제 사용자 이름으로 변경하세요.
-    password: process.env.NEXT_PUBLIC_MQTT_PASSWORD || 'your_password', // 실제 비밀번호로 변경하세요.
+    username: process.env.NEXT_PUBLIC_MQTT_USERNAME || 'your_username',
+    password: process.env.NEXT_PUBLIC_MQTT_PASSWORD || 'your_password',
     clientId: `facility_page_${params.id}_${Math.random().toString(16).substr(2, 8)}`,
-    connectTimeout: 5000, // 5초 연결 타임아웃
+    connectTimeout: 5000,
   };
 
   // 시설 데이터 가져오기
   const { facility, isLoading, isError } = useFacility(params.id);
 
+  // 카테고리별 관련 이미지 매핑
+  const getCategoryImages = (category: string, facilityName: string, floor?: string) => {
+    // 3F 시설들은 public 디렉토리의 이미지를 사용
+    if (floor === '3F') {
+      // 시설 이름에 따라 다른 이미지 사용
+      let imagePath = '/면세점.png'; // 기본값
+      
+      if (facilityName.includes('스타벅스')) {
+        imagePath = '/스타벅스.webp';
+      } else if (facilityName.includes('롯데면세점')) {
+        imagePath = '/면세점.png';
+      } else if (facilityName.includes('A1') || facilityName.includes('게이트')) {
+        imagePath = '/a1게이트.png';
+      }
+      
+      // 동일한 이미지를 5개 슬롯에 사용
+      const localImages = [
+        imagePath,
+        imagePath,
+        imagePath,
+        imagePath,
+        imagePath
+      ];
+      
+      return localImages.map(path => ({
+        full: path,
+        thumbnail: path
+      }));
+    }
+
+    // 3F가 아닌 시설들은 기존처럼 랜덤 이미지 사용
+    const baseUrl = 'https://picsum.photos/800/600';
+    const thumbnailUrl = 'https://picsum.photos/300/300';
+    
+    // 카테고리별 시드 번호 (일관된 이미지를 위해)
+    const categorySeeds = {
+      'cafe': [431, 500, 504, 513, 524], // 커피, 음료 관련 이미지
+      'restaurant': [292, 376, 490, 505, 569], // 음식 관련 이미지
+      'shop': [48, 129, 162, 305, 441], // 쇼핑, 상점 관련 이미지
+      'medical': [786, 832, 847, 935, 1074], // 의료, 건강 관련 이미지
+      'wifi': [365, 326, 367, 404, 518], // 기술, 인터넷 관련 이미지
+      'phone': [256, 342, 393, 445, 507], // 통신, 전화 관련 이미지
+      'babycare': [177, 203, 239, 274, 349], // 아기, 가족 관련 이미지
+      'accessibility': [593, 623, 659, 732, 804], // 접근성, 도움 관련 이미지
+      'gate': [436, 502, 564, 625, 683], // 공항, 여행 관련 이미지
+    };
+
+    const seeds = categorySeeds[category] || [100, 200, 300, 400, 500];
+    
+    return seeds.map((seed, index) => ({
+      full: `${baseUrl}?random=${seed}`,
+      thumbnail: `${thumbnailUrl}?random=${seed}`
+    }));
+  };
+
   // 컴포넌트 언마운트 시 MQTT 연결 해제
   useEffect(() => {
     return () => {
       if (mqttClientRef.current?.connected) {
-        mqttClientRef.current.end(true, () => { // force = true
+        mqttClientRef.current.end(true, () => {
           console.log('MQTT client disconnected on facility page unmount.');
         });
       }
@@ -115,6 +170,9 @@ function FacilityDetailPage({ params }) {
   }
 
   const categoryStyle = categoryInfo[facility.category]?.color || 'bg-gray-100 text-gray-700 border-gray-200';
+  
+  // 시설 카테고리에 맞는 이미지 가져오기
+  const facilityImages = getCategoryImages(facility.category, facility.name, facility.floor);
 
   // 안내 시작 및 MQTT 발행 핸들러 (컴포넌트 내부로 이동)
   async function handleStartNavigationAndPublish() {
@@ -161,6 +219,8 @@ function FacilityDetailPage({ params }) {
         const message = JSON.stringify({
           command: 'start_navigation',
           facilityId: params.id,
+          facilityName: facility.name,
+          facilityNum: facility.num,
           timestamp: new Date().toISOString(),
         });
 
@@ -231,32 +291,13 @@ function FacilityDetailPage({ params }) {
               <CardContent className="p-0">
                 <div className="relative w-full h-60 sm:h-80 md:h-96">
                   <Image
-                    src={facility.images[activeImageIndex] || 'https://picsum.photos/800/600?placeholder'}
-                    alt={facility.name}
+                    src={facilityImages[activeImageIndex]?.full || 'https://picsum.photos/800/600?random=100'}
+                    alt={`${facility.name} - ${categoryInfo[facility.category]?.name || facility.category} 시설`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
                     priority
                   />
-                </div>
-                <div className="p-2 sm:p-4 flex space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-primary-200 scrollbar-track-transparent">
-                  {facility.images.map((image, index) => (
-                    <div 
-                      key={index}
-                      className={`relative min-w-16 w-16 h-16 sm:min-w-20 sm:w-20 sm:h-20 rounded-md overflow-hidden cursor-pointer border-2 ${
-                        activeImageIndex === index ? 'border-primary-500' : 'border-transparent'
-                      }`}
-                      onClick={() => setActiveImageIndex(index)}
-                    >
-                      <Image
-                        src={image}
-                        alt={`${facility.name} 이미지 ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="80px"
-                      />
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>

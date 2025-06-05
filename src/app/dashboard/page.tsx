@@ -173,14 +173,6 @@ export default function DashboardPage() {
                 <Button 
                   variant="ghost" 
                   className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50 font-medium px-2"
-                  onClick={() => router.push('/reservations')}
-                >
-                  <Calendar className="w-4 h-4 mr-1" />
-                  예약관리
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50 font-medium px-2"
                   onClick={() => router.push('/map')}
                 >
                   <Map className="w-4 h-4 mr-1" />

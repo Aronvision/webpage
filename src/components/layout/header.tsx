@@ -82,11 +82,6 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       label: '대시보드',
     },
     {
-      href: '/reservations',
-      icon: <Calendar className="h-4 w-4 mr-1" />,
-      label: '예약 관리',
-    },
-    {
       href: '/map',
       icon: <Map className="h-4 w-4 mr-1" />,
       label: '지도',

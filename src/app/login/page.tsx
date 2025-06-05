@@ -163,31 +163,6 @@ export default function LoginPage() {
               )}
             </form>
             
-            <div className="mt-4 sm:mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-neutral-300"></div>
-                </div>
-                <div className="relative flex justify-center text-xs sm:text-sm">
-                  <span className="px-2 bg-white text-neutral-500">또는</span>
-                </div>
-              </div>
-              
-              <div className="mt-4 sm:mt-6 grid grid-cols-1 gap-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full text-sm sm:text-base py-2 sm:py-6 h-auto"
-                  disabled={isLoading || isRedirecting}
-                  onClick={() => {
-                    // 항공권 번호 로그인 로직 (추후 구현)
-                    alert('항공권 번호 로그인 기능은 준비 중입니다.');
-                  }}
-                >
-                  항공권 번호로 로그인
-                </Button>
-              </div>
-            </div>
-            
             <div className="mt-4 sm:mt-6 text-center">
               <p className="text-xs sm:text-sm text-neutral-500">
                 계정이 없으신가요?{' '}

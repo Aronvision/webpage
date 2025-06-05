@@ -82,7 +82,7 @@ export default function FlightTicketQrScanPage({ params }: FlightTicketQrScanPag
           // 스캔 영역 스타일 조정
           const qrRegion = document.querySelector('#qr-reader div[style*="position: absolute"] div[style*="border"]');
           if (qrRegion && qrRegion instanceof HTMLElement) {
-            qrRegion.style.border = '4px solid white';
+            qrRegion.style.border = '4px solid #3b82f6';
             qrRegion.style.borderRadius = '10px';
           }
           
@@ -122,28 +122,34 @@ export default function FlightTicketQrScanPage({ params }: FlightTicketQrScanPag
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-blue-50 via-blue-50/70 to-sky-50/90">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLW9wYWNpdHk9Ii4xNSIgY3g9IjEwIiBjeT0iMTAiIHI9IjEuNSIvPjwvZz48L3N2Zz4=')] bg-[size:24px_24px] opacity-50 pointer-events-none"></div>
+      {/* 폴리곤 패턴 배경 */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+PHBhdGggZD0iTTAgMGgxMHYxMEgwem0xMCAwaDEwdjEwSDEwem0xMCAwaDEwdjEwSDIwem0xMCAwaDEwdjEwSDMwem0xMCAwaDEwdjEwSDQwem0xMCAwaDEwdjEwSDUwek0wIDEwaDEwdjEwSDB6bTEwIDBoMTB2MTBIMTBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEg1MHpNMCAyMGgxMHYxMEgwbTEwIDBoMTB2MTBIMTBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEg1MHpNMCAzMGgxMHYxMEgwbTEwIDBoMTB2MTBIMTBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEg1MHpNMCA0MGgxMHYxMEgwbTEwIDBoMTB2MTBIMTBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEg1MHpNMCA1MGgxMHYxMEgwbTEwIDBoMTB2MTBIMTBtMTAgMGgxMHYxMEgyMG0xMCAwaDEwdjEwSDMwbTEwIDBoMTB2MTBINDBtMTAgMGgxMHYxMEg1MHoiIG9wYWNpdHk9Ii4wNSIgZmlsbD0iIzNiODJmNiIvPjwvc3ZnPg==')] bg-[size:60px_60px] opacity-25 mix-blend-overlay pointer-events-none"></div>
       
-      <div className="flex flex-col items-center">
-        <Card className="w-full max-w-md shadow-xl relative z-10 bg-white/90 backdrop-blur-sm ring-1 ring-blue-100">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-2xl font-bold">항공권 QR 코드 스캔</CardTitle>
-            <Button variant="ghost" size="icon" onClick={() => router.back()}>
+      {/* 빛나는 원형 그라데이션 */}
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-blue-200/30 to-blue-300/30 blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-sky-200/20 to-blue-100/20 blur-[100px] pointer-events-none"></div>
+      
+      <div className="flex flex-col items-center relative z-10">
+        <Card className="w-full max-w-md shadow-2xl relative z-10 bg-sky-200/90 backdrop-blur-xl border border-blue-200 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-blue-100/30 pointer-events-none"></div>
+          <CardHeader className="flex flex-row items-center justify-between border-b border-blue-300/40">
+            <CardTitle className="text-2xl font-bold text-blue-900">항공권 QR 코드 스캔</CardTitle>
+            <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-neutral-600 hover:bg-blue-50/50">
               <ArrowLeft className="w-6 h-6" />
             </Button>
           </CardHeader>
-          <CardContent className="flex flex-col items-center space-y-6">
-            <div className="w-full md:w-[400px] h-[400px] bg-neutral-200 rounded-lg shadow-inner overflow-hidden relative">
+          <CardContent className="flex flex-col items-center space-y-6 pt-6">
+            <div className="w-full md:w-[400px] h-[400px] bg-black/10 rounded-lg shadow-inner overflow-hidden relative border border-blue-100">
               {error ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
-                  <Camera className="w-12 h-12 text-neutral-400 mb-3" />
+                  <Camera className="w-12 h-12 text-neutral-500 mb-3" />
                   <p className="text-neutral-700 text-center">{error}</p>
                 </div>
               ) : !isScanning ? (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="animate-pulse flex flex-col items-center">
-                    <Camera className="w-12 h-12 text-neutral-400 mb-3" />
-                    <p className="text-neutral-500">카메라 준비 중...</p>
+                    <Camera className="w-12 h-12 text-neutral-500 mb-3" />
+                    <p className="text-neutral-600">카메라 준비 중...</p>
                   </div>
                 </div>
               ) : null}
@@ -183,11 +189,24 @@ export default function FlightTicketQrScanPage({ params }: FlightTicketQrScanPag
                   }
                   
                   #qr-reader div[style*="position: absolute"] div[style*="border"] {
-                    border: 4px solid white !important;
-                    border-radius: 10px !important;
-                    box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3) !important;
+                    border: 3px solid #3b82f6 !important;
+                    border-radius: 12px !important;
+                    box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.15) !important;
+                    animation: pulse 2s infinite !important;
                     width: 240px !important;
                     height: 240px !important;
+                  }
+                  
+                  @keyframes pulse {
+                    0% {
+                      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(59, 130, 246, 0.7) !important;
+                    }
+                    70% {
+                      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(59, 130, 246, 0) !important;
+                    }
+                    100% {
+                      box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(59, 130, 246, 0) !important;
+                    }
                   }
                   
                   /* 비디오 영역 전체 화면 차지하도록 설정 */
@@ -199,14 +218,11 @@ export default function FlightTicketQrScanPage({ params }: FlightTicketQrScanPag
                 `}</style>
               </div>
             </div>
-            <p className="text-sm text-neutral-500 text-center mt-2">
+            <p className="text-sm text-neutral-600 text-center mt-2 px-4">
               항공권의 QR 코드를 화면 중앙에 위치시켜 주세요.
             </p>
           </CardContent>
         </Card>
-        <p className="text-xs text-neutral-400 mt-4">
-          QR 스캔 기능은 사용자의 카메라 접근 권한이 필요합니다.
-        </p>
       </div>
     </div>
   );

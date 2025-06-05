@@ -20,20 +20,23 @@ interface MobilityDevice {
   batteryLevel: number;
   position: { x: number; y: number }; // 이 좌표는 새 지도 이미지 크기에 맞게 조정 필요
   available: boolean;
+  floor: Floor;
 }
 
-type Floor = 'B1' | '1F' | '2F';
+type Floor = 'B1' | '1F' | '2F' | '3F';
 
 const floorImageMap: Record<Floor, string> = {
   'B1': '/5공학_지하.png',
   '1F': '/1공학_1층.png',
   '2F': '/5공학_1층.png',
+  '3F': '/시연.png', 
 };
 
 const floorDisplayNameMap: Record<Floor, string> = {
   'B1': '지하 1층',
   '1F': '1층',
   '2F': '2층',
+  '3F': '3층',
 };
 
 const BASE_MAP_WIDTH = 400*0.875;
@@ -68,40 +71,108 @@ export default function InstantUsePage() {
       type: 'BIKE',
       batteryLevel: 85,
       // 예시 좌표: 550x900 이미지 크기에 맞게 조정 필요
-      position: { x: 200, y: 300 }, 
-      available: true
+      position: { x: 50, y: 20 }, 
+      available: true,
+      floor: 'B1'
     },
     {
       id: 'JA1456',
       name: '전기 바이크',
       type: 'BIKE',
       batteryLevel: 72,
-      position: { x: 100, y: 150 }, // 기존 550x900 기준
-      available: true
+      position: { x: 80, y: 20 }, // 기존 550x900 기준
+      available: true,
+      floor: 'B1'
     },
     {
       id: 'JA2034',
       name: '전기 킥보드',
       type: 'KICKBOARD',
       batteryLevel: 65,
-      position: { x: 350, y: 400 }, // 기존 550x900 기준
-      available: true
+      position: { x: 110, y: 20 }, // 기존 550x900 기준
+      available: true,
+      floor: 'B1'
     },
     {
       id: 'JA1890',
       name: '전기 바이크',
       type: 'BIKE',
       batteryLevel: 45,
-      position: { x: 400, y: 500 }, // 기존 550x900 기준
-      available: false
+      position: { x: 80, y: 50 }, // 기존 550x900 기준
+      available: false,
+      floor: 'B1'
     },
     {
       id: 'JA1566',
       name: '전기 킥보드',
       type: 'KICKBOARD',
       batteryLevel: 92,
-      position: { x: 150, y: 250 }, // 기존 550x900 기준
-      available: true
+      position: { x: 50, y: 50 }, // 기존 550x900 기준
+      available: true,
+      floor: 'B1'
+    },
+    {
+      id: 'JA2101',
+      name: '1층 전기 바이크',
+      type: 'BIKE',
+      batteryLevel: 90,
+      position: { x: 40, y: 425 }, 
+      available: true,
+      floor: '1F'
+    },
+    {
+      id: 'JA2102',
+      name: '1층 전기 킥보드',
+      type: 'KICKBOARD',
+      batteryLevel: 75,
+      position: { x: 10, y: 425 }, 
+      available: true,
+      floor: '1F'
+    },
+    {
+      id: 'JA2201',
+      name: '2층 전기 바이크',
+      type: 'BIKE',
+      batteryLevel: 88,
+      position: { x: 225, y: 230 }, 
+      available: true,
+      floor: '2F'
+    },
+    {
+      id: 'JA2202',
+      name: '2층 전기 킥보드',
+      type: 'KICKBOARD',
+      batteryLevel: 60,
+      position: { x: 250, y: 230 }, 
+      available: false,
+      floor: '2F'
+    },
+    {
+      id: 'JA3301',
+      name: '3층 전기 바이크',
+      type: 'BIKE',
+      batteryLevel: 95,
+      position: { x: 70, y: 210 }, 
+      available: true,
+      floor: '3F'
+    },
+    {
+      id: 'JA3302',
+      name: '3층 전기 킥보드',
+      type: 'KICKBOARD',
+      batteryLevel: 80,
+      position: { x: 40, y: 210 }, 
+      available: true,
+      floor: '3F'
+    },
+    {
+      id: 'JA3303',
+      name: '3층 전기 바이크',
+      type: 'BIKE',
+      batteryLevel: 55,
+      position: { x: 10, y: 210 }, 
+      available: false,
+      floor: '3F'
     }
   ];
 
@@ -275,7 +346,7 @@ export default function InstantUsePage() {
 
       {/* 층 선택 버튼 */}
       <div className="bg-white/70 backdrop-blur-sm shadow-sm py-2.5 px-2 sm:px-3 flex justify-center gap-x-2 items-center border-b border-blue-100/50">
-        {(['B1', '1F', '2F'] as Floor[]).map((floor) => (
+        {(['B1', '1F', '2F', '3F'] as Floor[]).map((floor) => (
           <Button
             key={floor}
             variant={currentFloor === floor ? 'default' : 'ghost'}
@@ -329,7 +400,9 @@ export default function InstantUsePage() {
           />
 
           {/* 모빌리티 디바이스 마커 */}
-          {mobilityDevices.map((device) => {
+          {mobilityDevices
+            .filter(device => device.floor === currentFloor) // 현재 층에 해당하는 디바이스만 필터링
+            .map((device) => {
             const markerX = (device.position.x / BASE_MAP_WIDTH) * mapDimensions.width;
             const markerY = (device.position.y / BASE_MAP_HEIGHT) * mapDimensions.height;
             return (
@@ -475,20 +548,7 @@ export default function InstantUsePage() {
               </div>
 
               {/* 버튼 그룹 */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button 
-                    variant="outline"
-                    className="py-3 sm:py-4 h-auto flex-col gap-1 text-xs sm:text-sm border-blue-200 hover:bg-blue-50 w-full"
-                    onClick={handleFavoriteDevice}
-                    disabled={!selectedDevice?.available}
-                  >
-                    <span className="font-semibold">찜하기</span>
-                  </Button>
-                </motion.div>
+              <div className="w-full">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

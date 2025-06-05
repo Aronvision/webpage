@@ -19,6 +19,7 @@ import { facilityCategories, terminals, floors } from '@/features/facilities/con
 import { categoryInfo } from '@/features/facilities/types';
 import { Facility } from '@/features/facilities/types';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 // 지도 크기 상수 정의
 const BASE_MAP_WIDTH = 1512;
@@ -28,7 +29,7 @@ const MOBILE_MAP_HEIGHT = (MOBILE_MAP_WIDTH / BASE_MAP_WIDTH) * BASE_MAP_HEIGHT;
 
 // 필터링된 터미널 및 층 데이터
 const filteredTerminals = terminals.filter(terminal => terminal.id !== 'T2');
-const filteredFloors = floors.filter(floor => !['3F', '4F'].includes(floor.id));
+const filteredFloors = floors.filter(floor => !['4F', 'ALL'].includes(floor.id));
 
 // React Query 클라이언트 생성
 const queryClient = new QueryClient();
@@ -46,8 +47,9 @@ export default function MapPageWrapper() {
 function MapPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { dismiss } = useToast();
   const [selectedTerminal, setSelectedTerminal] = useState('T1');
-  const [selectedFloor, setSelectedFloor] = useState('ALL');
+  const [selectedFloor, setSelectedFloor] = useState('3F');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const isInitialMount = useRef(true);
@@ -301,7 +303,7 @@ function MapPage() {
             >
               <ChevronLeft className="w-5 h-5" />
             </Button>
-            <h1 className="text-lg sm:text-2xl font-bold text-slate-800">공항 지도</h1>
+            <h1 className="text-lg sm:text-2xl font-bold text-slate-800">목적지 선택</h1>
           </div>
         </div>
       </motion.div>
@@ -537,11 +539,13 @@ function MapPage() {
                           selectedFloor === 'B1' ? "/5공학_지하.png" :
                           selectedFloor === '1F' ? "/1공학_1층.png" :
                           selectedFloor === '2F' ? "/5공학_1층.png" :
+                          selectedFloor === '3F' ? "/시연.png" :
                           "/airport.png"
                         }
                         alt="공항 지도"
                         fill
                         className="object-contain"
+                        style={selectedFloor === '3F' ? { transform: 'scale(0.6)' } : {}}
                         draggable={false}
                       />
 

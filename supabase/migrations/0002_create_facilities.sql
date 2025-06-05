@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS facilities (
   rating NUMERIC(3, 1),
   reviews INTEGER DEFAULT 0,
   images TEXT[] DEFAULT '{}',
+  num INTEGER, 
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
@@ -42,22 +43,23 @@ CREATE INDEX facilities_terminal_idx ON facilities (terminal);
 CREATE INDEX facilities_floor_idx ON facilities (floor);
 
 -- 샘플 데이터 삽입
-INSERT INTO facilities (name, category, location, terminal, floor, coordinates, description, operating_hours, phone, website, rating, reviews, images)
+INSERT INTO facilities (name, category, location, terminal, floor, coordinates, description, operating_hours, phone, website, rating, reviews, images, num)
 VALUES
   (
     '스타벅스', 
     'cafe', 
     '제1터미널 1층', 
     'T1', 
-    '1F', 
-    '{"x": 30, "y": 60}', 
+    '3F', 
+    '{"x": 35, "y": 60}', 
     '스타벅스는 전 세계적으로 유명한 커피 체인점으로, 다양한 커피와 음료, 디저트를 제공합니다.', 
     '매일 06:00 - 22:00', 
     '02-1234-5678', 
     'https://www.starbucks.co.kr', 
     4.5, 
     120, 
-    ARRAY['https://picsum.photos/800/600?1', 'https://picsum.photos/800/600?2', 'https://picsum.photos/800/600?3']
+    ARRAY['https://picsum.photos/800/600?1', 'https://picsum.photos/800/600?2', 'https://picsum.photos/800/600?3'],
+    4
   ),
   (
     '롯데면세점', 
@@ -65,14 +67,15 @@ VALUES
     '제1터미널 3층', 
     'T1', 
     '3F', 
-    '{"x": 42, "y": 45}', 
+    '{"x": 60, "y": 30}', 
     '롯데면세점은 다양한 브랜드의 화장품, 패션, 주류, 담배 등을 면세로 판매하는 쇼핑 공간입니다.', 
     '매일 07:00 - 21:30', 
     '02-2345-6789', 
     'https://www.lottedfs.com', 
     4.3, 
     95, 
-    ARRAY['https://picsum.photos/800/600?4', 'https://picsum.photos/800/600?5', 'https://picsum.photos/800/600?6']
+    ARRAY['https://picsum.photos/800/600?4', 'https://picsum.photos/800/600?5', 'https://picsum.photos/800/600?6'],
+    3
   ),
   (
     '공항 의무실', 
@@ -87,22 +90,24 @@ VALUES
     '', 
     4.7, 
     32, 
-    ARRAY['https://picsum.photos/800/600?7', 'https://picsum.photos/800/600?8']
+    ARRAY['https://picsum.photos/800/600?7', 'https://picsum.photos/800/600?8'],
+    3
   ),
   (
     '신세계면세점', 
     'shop', 
-    '제1터미널 3층', 
+    '제1터미널 지하1층', 
     'T1', 
-    '3F', 
-    '{"x": 40, "y": 50}', 
+    '2F', 
+    '{"x": 37, "y": 42}', 
     '신세계면세점은 다양한 명품 브랜드와 화장품, 주류 등을 판매하는 면세점입니다.', 
     '매일 07:00 - 21:00', 
     '02-4567-8901', 
     'https://www.ssgdfs.com', 
     4.4, 
     88, 
-    ARRAY['https://picsum.photos/800/600?9', 'https://picsum.photos/800/600?10']
+    ARRAY['https://picsum.photos/800/600?9', 'https://picsum.photos/800/600?10'],
+    4
   ),
   (
     '파리바게트', 
@@ -110,14 +115,15 @@ VALUES
     '제1터미널 2층', 
     'T1', 
     '2F', 
-    '{"x": 25, "y": 45}', 
+    '{"x": 47, "y": 70}', 
     '파리바게트는 다양한 빵과 케이크, 음료를 제공하는 베이커리 카페입니다.', 
     '매일 06:30 - 21:00', 
     '02-5678-9012', 
     'https://www.paris.co.kr', 
     4.2, 
     75, 
-    ARRAY['https://picsum.photos/800/600?11', 'https://picsum.photos/800/600?12']
+    ARRAY['https://picsum.photos/800/600?11', 'https://picsum.photos/800/600?12'],
+    1
   ),
   (
     '본죽', 
@@ -125,14 +131,15 @@ VALUES
     '제1터미널 지하 1층', 
     'T1', 
     'B1', 
-    '{"x": 32, "y": 40}', 
+    '{"x": 47, "y": 30}', 
     '본죽은 건강한 한식 죽 전문점으로, 다양한 종류의 죽과 반찬을 제공합니다.', 
     '매일 07:00 - 21:00', 
     '02-6789-0123', 
     'https://www.bonif.co.kr', 
     4.1, 
     62, 
-    ARRAY['https://picsum.photos/800/600?13', 'https://picsum.photos/800/600?14']
+    ARRAY['https://picsum.photos/800/600?13', 'https://picsum.photos/800/600?14'],
+    4
   ),
   (
     '맥도날드', 
@@ -147,7 +154,8 @@ VALUES
     'https://www.mcdonalds.co.kr', 
     4.0, 
     110, 
-    ARRAY['https://picsum.photos/800/600?15', 'https://picsum.photos/800/600?16']
+    ARRAY['https://picsum.photos/800/600?15', 'https://picsum.photos/800/600?16'],
+    3
   ),
   (
     '유아휴게실', 
@@ -162,7 +170,8 @@ VALUES
     '', 
     4.6, 
     45, 
-    ARRAY['https://picsum.photos/800/600?17', 'https://picsum.photos/800/600?18']
+    ARRAY['https://picsum.photos/800/600?17', 'https://picsum.photos/800/600?18'],
+    4
   ),
   (
     '휠체어 대여소', 
@@ -177,22 +186,24 @@ VALUES
     '', 
     4.8, 
     38, 
-    ARRAY['https://picsum.photos/800/600?19', 'https://picsum.photos/800/600?20']
+    ARRAY['https://picsum.photos/800/600?19', 'https://picsum.photos/800/600?20'],
+    1
   ),
   (
     '공중전화', 
     'phone', 
     '제1터미널 3층', 
     'T1', 
-    '3F', 
-    '{"x": 36, "y": 48}', 
+    'B1', 
+    '{"x": 54, "y": 40}', 
     '공중전화는 국내 및 국제 전화를 걸 수 있는 공용 전화기입니다.', 
     '매일 24시간 운영', 
     '', 
     '', 
     4.0, 
     25, 
-    ARRAY['https://picsum.photos/800/600?21']
+    ARRAY['https://picsum.photos/800/600?21'],
+    2
   ),
   (
     '무료 와이파이존', 
@@ -207,37 +218,40 @@ VALUES
     '', 
     4.2, 
     85, 
-    ARRAY['https://picsum.photos/800/600?22']
+    ARRAY['https://picsum.photos/800/600?22'],
+    3
   ),
   (
     'A1 게이트', 
     'gate', 
-    '제1터미널 3층', 
+    '제1터미널 지하1층', 
     'T1', 
     '3F', 
-    '{"x": 48, "y": 58}', 
+    '{"x": 64, "y": 60}', 
     'A1 게이트는 국제선 출발을 위한 탑승구입니다.', 
     '항공편 일정에 따라 다름', 
     '', 
     '', 
     4.5, 
     60, 
-    ARRAY['https://picsum.photos/800/600?23']
+    ARRAY['https://picsum.photos/800/600?23'],
+    1
   ),
   (
     'B5 게이트', 
     'gate', 
-    '제1터미널 3층', 
+    '제1터미널 지하1층', 
     'T1', 
-    '3F', 
-    '{"x": 52, "y": 35}', 
+    'B1', 
+    '{"x": 54, "y": 25}', 
     'B5 게이트는 국제선 출발을 위한 탑승구입니다.', 
     '항공편 일정에 따라 다름', 
     '', 
     '', 
     4.4, 
     55, 
-    ARRAY['https://picsum.photos/800/600?24']
+    ARRAY['https://picsum.photos/800/600?24'],
+    2
   ),
   (
     '공항 안내센터', 
@@ -252,7 +266,8 @@ VALUES
     'https://www.airport.co.kr', 
     4.9, 
     150, 
-    ARRAY['https://picsum.photos/800/600?25', 'https://picsum.photos/800/600?26']
+    ARRAY['https://picsum.photos/800/600?25', 'https://picsum.photos/800/600?26'],
+    2
   ),
   (
     '비상 의료시설', 
@@ -267,7 +282,8 @@ VALUES
     '', 
     4.8, 
     45, 
-    ARRAY['https://picsum.photos/800/600?27', 'https://picsum.photos/800/600?28']
+    ARRAY['https://picsum.photos/800/600?27', 'https://picsum.photos/800/600?28'],
+    3
   );
 
 -- RLS 정책 설정 (모든 사용자가 읽기 가능)

@@ -11,21 +11,31 @@ interface SidebarItemProps {
   icon: React.ReactNode;
   label: string;
   active: boolean;
+  onClick?: () => Promise<void> | void;
 }
 
-const SidebarItem = ({ href, icon, label, active }: SidebarItemProps) => {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
-        active 
-          ? 'bg-primary-100 text-primary-700 font-medium' 
-          : 'text-neutral-700 hover:bg-neutral-200 hover:text-neutral-900'
-      )}
-    >
+const SidebarItem = ({ href, icon, label, active, onClick }: SidebarItemProps) => {
+  const content = (
+    <>
       {icon}
       <span>{label}</span>
+    </>
+  );
+  
+  const className = cn(
+    'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
+    active 
+      ? 'bg-primary-100 text-primary-700 font-medium' 
+      : 'text-neutral-700 hover:bg-neutral-200 hover:text-neutral-900'
+  );
+  
+  return onClick ? (
+    <button onClick={onClick} className={className}>
+      {content}
+    </button>
+  ) : (
+    <Link href={href} className={className}>
+      {content}
     </Link>
   );
 };
@@ -44,11 +54,6 @@ export function Sidebar() {
       label: '대시보드',
     },
     {
-      href: '/reservations',
-      icon: <Calendar className="h-5 w-5" />,
-      label: '예약 관리',
-    },
-    {
       href: '/map',
       icon: <Map className="h-5 w-5" />,
       label: '지도',
@@ -58,36 +63,45 @@ export function Sidebar() {
       icon: <User className="h-5 w-5" />,
       label: '마이페이지',
     },
-    {
-      href: '/settings',
-      icon: <Settings className="h-5 w-5" />,
-      label: '설정',
-    },
   ];
 
   return (
     <div className="flex h-full w-full flex-col bg-neutral-100 border-r border-neutral-200">
       <div className="flex-1 overflow-auto py-6 px-3">
         <nav className="flex flex-col gap-1">
-          {navItems.map((item) => (
+          {/* 첫 4개 메뉴 항목 수직 배치 */}
+          {navItems.slice(0, 4).map((item) => (
             <SidebarItem
-              key={item.href}
+              key={item.href + item.label}
               href={item.href}
               icon={item.icon}
               label={item.label}
               active={pathname === item.href}
+              onClick={item.onClick}
             />
           ))}
         </nav>
       </div>
+      
+      {/* 설정 및 로그아웃 버튼 수평 배치 */}
       <div className="border-t border-neutral-200 p-3">
-        <button
-          onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-200 hover:text-neutral-900 transition-colors"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>로그아웃</span>
-        </button>
+        <div className="flex flex-row justify-between">
+          <SidebarItem
+            key="/settings"
+            href="/settings"
+            icon={<Settings className="h-5 w-5" />}
+            label="설정"
+            active={pathname === '/settings'}
+          />
+          <SidebarItem
+            key="logout"
+            href="#"
+            icon={<LogOut className="h-5 w-5" />}
+            label="로그아웃"
+            active={false}
+            onClick={handleSignOut}
+          />
+        </div>
       </div>
     </div>
   );

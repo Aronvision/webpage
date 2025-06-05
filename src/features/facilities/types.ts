@@ -22,6 +22,7 @@ export interface Facility {
   terminal: string;
   floor: string;
   coordinates: Coordinates;
+  num?: string;
   description?: string;
   operating_hours?: string;
   phone?: string;
